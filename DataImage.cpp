@@ -20,6 +20,7 @@ void DataImage::WriteDataToSZMIK(std::string pathToWrite)
 		std::cout << "Blad przy tworzeniu pliku";
 		exit(1);
 	}
+
 //*************************
 //	//Nag³ówke pliku SZMIK:
 //	//	-2 bajty id 'SZ'
