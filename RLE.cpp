@@ -16,4 +16,5 @@ RLE::RLE()
 
 RLE::~RLE()
 {
+	// zmieniam
 }
