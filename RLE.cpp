@@ -17,4 +17,6 @@ RLE::RLE()
 RLE::~RLE()
 {
 	// zmieniam
+	// zmeinaim 2
+
 }
