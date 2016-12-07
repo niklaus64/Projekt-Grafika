@@ -50,7 +50,7 @@ void MainWindow::on_pushButton_2_clicked()
 
 void MainWindow::on_actionOtw_rz_triggered()
 {
-    pathToBMP = QFileDialog::getOpenFileName(this,tr("Open file"),"./","All file (*.*)");
+    pathToBMP = QFileDialog::getOpenFileName(this,tr("Open file"),"./","bmp (*.bmp)");
     ui->pushButton_2->setEnabled(!pathToBMP.isNull());
 }
 
