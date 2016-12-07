@@ -10,35 +10,30 @@
 #include <bitset>
 #include <string>
 
+struct pixel
+{
+	unsigned char r;
+	unsigned char g;
+	unsigned char b;
+
+	bool operator==(pixel &p) const
+	{
+		if ((r == p.r) && (g == p.g) && (b == p.b)) return true;
+		else return false;
+	}
+	pixel(const unsigned char _r = 0, const unsigned char _g = 0, const unsigned char _b = 0) : r(_r), g(_g), b(_b) {};
+};
+
 class DataImage
 {
 	uint32_t width;
 	uint32_t height;
 	uint32_t offset;
 	compressionType cT;
-	
-
-	struct pixel
-	{
-		unsigned char r;
-		unsigned char g;
-		unsigned char b;
-
-		bool operator==(pixel &p) const
-		{
-			if ((r == p.r) && (g == p.g) && (b == p.b)) return true;
-			else return false;
-		}
-	};
-
-	
-	
 	void FillBitMapFileHeader(BITMAPFILEHEADER &);
 	void FillBitMapInfoHeader(BITMAPINFOHEADER &);
 public:
-
-	std::vector<pixel> pixmap;
-	std::vector<char> bitmap;
+	std::vector<unsigned char> bitmap;
 	DataImage();
 	DataImage(compressionType);
 	void WriteDataToSZMIK(std::string);
