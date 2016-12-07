@@ -30,19 +30,21 @@ void DataImage::WriteDataToSZMIK(std::string pathToWrite)
 //	//	-4 bajty wilkosc bitmapy
 //	//	- duzo bajtow bitmapa
 //****************************
-	file << 'S' << 'Z';
-	file.write((char*)&cT, sizeof(compressionType));
-	file.write((char *)&width, sizeof(width));
-	file.write((char *)&height, sizeof(height));
+  file << 'S' << 'Z';
+ file.write((char*)&cT, sizeof(compressionType));
+ file.write((char *)&width, sizeof(width));
+   file.write((char *)&height, sizeof(height));
 
-	switch (cT) {
-	case (C_OWN_5_BITS || C_NOT_COMPRESSED ? C_OWN_5_BITS : C_OWN_5_BITS):
-		size_t s = bitmap.size();
-		file.write((char*)&s, sizeof(s));
+
+    auto s = bitmap.size();
+
+        file.write((char *)&s, sizeof(s));
+
+       // file.write((char*)&s, sizeof(s));
 		for (auto &i : bitmap) file.write((char*)&i,sizeof(i));
 
 		//tutaj dopisaæ kolejne case dla innych 
-	}
+
 
 	file.close();
 }
@@ -67,23 +69,14 @@ void DataImage::LoadFromBMP(std::string path)
 	auto dataSize = ((width * 3 + 3) & (~3)) * height;
 
 
-	switch (cT) {
-	case C_OWN_5_BITS :
+
 		
 		bitmap.resize(file_OffSet - HEADER_SIZE);
 		file.read(bitmap.data(), bitmap.size());
 		bitmap.resize(dataSize);
 		file.read(bitmap.data(), bitmap.size());
-		break;
-	case C_NOT_COMPRESSED:
-		
-		bitmap.resize(file_OffSet - HEADER_SIZE);
-		file.read(bitmap.data(), bitmap.size());
-		bitmap.resize(dataSize);
-		file.read(bitmap.data(), bitmap.size());
-		break;
-		//tutaj dopisaæ kolejne case dla innych 
-	}
+
+
 
 	
 	file.close();
@@ -99,7 +92,7 @@ void DataImage::LoadFromSZMIK(std::string path)
 	}
 
 
-	const size_t HEADER_SIZE = 18;	//wielkosc nag³owka szmik
+    const size_t HEADER_SIZE = 22;	//wielkosc nag³owka szmik
 	std::array<char, HEADER_SIZE> header;
 
 	file.read(header.data(), header.size());
@@ -109,18 +102,9 @@ void DataImage::LoadFromSZMIK(std::string path)
 	auto dataSize = *reinterpret_cast<size_t*>(&header[14]);
 	
 
-	switch (cT) {
-	case C_OWN_5_BITS:
-		bitmap.resize(dataSize);
-		file.read(bitmap.data(), bitmap.size());
-		break;
-	case C_NOT_COMPRESSED:
-		bitmap.resize(dataSize);
-		file.read(bitmap.data(), bitmap.size());
-		break;
 
-		//dopisaæ reszte do innych kompresji
-	}
+		bitmap.resize(dataSize);
+		file.read(bitmap.data(), bitmap.size());
 	
 	file.close();
 }
