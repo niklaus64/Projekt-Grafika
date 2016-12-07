@@ -10,7 +10,7 @@ void App::po_nacisnieciu_compress()
 	
 
 
-	switch (0)
+	switch (3)
 	{
 	case C_RLE:
 		//al = new RLE(); 
@@ -19,7 +19,7 @@ void App::po_nacisnieciu_compress()
 		//al = new ByteRun(); 
 		break;
 	case C_OWN_5_BITS:
-		al = new Own5Bits(PATH_TO_FILE_BMP,0,0,false); // kolejno: sciezka do plik, stopien jasnoci, stopien kontrastu, skala szarosci
+		al = new Own5Bits(PATH_TO_FILE_BMP,0,0,true); // kolejno: sciezka do plik, stopien jasnoci, stopien kontrastu, skala szarosci
 		al->compress();
 		al->saveToFile(PATH_TO_SAVE_FILE_SZMIK);
 		break;
