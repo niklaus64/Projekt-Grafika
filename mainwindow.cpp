@@ -39,7 +39,7 @@ void MainWindow::on_pushButton_2_clicked()
         break;
     case C_NOT_COMPRESSED:
         pathToSave = QFileDialog::getSaveFileName(this,tr("Save..."),"./","BMP (*.bmp)");
-        al = new NoCompressed(PATH_TO_FILE_BMP, 0, 0, ui->radioButton->isChecked());
+        al = new NoCompressed(pathToBMP.toStdString(), 0, 0, ui->radioButton->isChecked());
         al->saveToFile(pathToSave.toStdString());
 
         break;
