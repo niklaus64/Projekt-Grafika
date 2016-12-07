@@ -6,14 +6,12 @@ App::App()
 
 void App::po_nacisnieciu_compress()
 {
-
-	
-
-
-	switch (0)
+	switch (1)
 	{
 	case C_RLE:
-		//al = new RLE(); 
+		al = new RLE(PATH_TO_FILE_BMP,0,0,false); 
+		al->compress();
+		al->saveToFile(PATH_TO_SAVE_FILE_BMP);
 		break;
 	case C_BYTE_RUN:
 		//al = new ByteRun(); 
@@ -26,12 +24,11 @@ void App::po_nacisnieciu_compress()
 	case C_NOT_COMPRESSED:
 		al = new NoCompressed(PATH_TO_FILE_BMP, 0, 0, true);
 		al->saveToFile(PATH_TO_SAVE_FILE_BMP);
-
 		break;
-	}
-	
-	
+	}	
 }
+
+
 //*********************************************
 //Niestety w tej metodzie wykorzysta³em metodê z DataImage jako statyczna,
 //poniewa¿ nie wiadomo jakiego typu kompresja jest u¿yta

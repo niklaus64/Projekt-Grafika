@@ -8,6 +8,8 @@
 #include <Windows.h>
 #include <list>
 #include <bitset>
+#include <string>
+
 class DataImage
 {
 	uint32_t width;

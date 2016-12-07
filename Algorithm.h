@@ -8,7 +8,7 @@ protected :
 	
 public:
 	virtual void compress() = 0;
-	virtual void saveToFile(std::string) = 0;
+	virtual void saveToFile(const std::string) = 0;
 	
 };
 

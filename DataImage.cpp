@@ -1,16 +1,7 @@
 #include "DataImage.h"
 
 
-
-
-DataImage::DataImage()
-{
-}
-
-DataImage::DataImage(compressionType _cT)
-{
-	cT = _cT;
-}
+DataImage::DataImage(compressionType _cT = C_NOT_COMPRESSED) : cT(_cT) {};
 
 void DataImage::WriteDataToSZMIK(std::string pathToWrite)
 {
@@ -21,15 +12,16 @@ void DataImage::WriteDataToSZMIK(std::string pathToWrite)
 		exit(1);
 	}
 
-//*************************
-//	//Nag³ówke pliku SZMIK:
-//	//	-2 bajty id 'SZ'
-//	//	-4 bajty rodzaj kompresji
-//	//	-4 bajty szerokosc
-//	//	-4 bajty wysokosc
-//	//	-4 bajty wilkosc bitmapy
-//	//	- duzo bajtow bitmapa
-//****************************
+	//*************************
+	//	//Nag³ówke pliku SZMIK:
+	//	//	-2 bajty id 'SZ'
+	//	//	-4 bajty rodzaj kompresji
+	//	//	-4 bajty szerokosc
+	//	//	-4 bajty wysokosc
+	//	//	-4 bajty wilkosc bitmapy
+	//	//	- duzo bajtow bitmapa
+	//****************************
+
 	file << 'S' << 'Z';
 	file.write((char*)&cT, sizeof(compressionType));
 	file.write((char *)&width, sizeof(width));
@@ -69,20 +61,22 @@ void DataImage::LoadFromBMP(std::string path)
 
 	switch (cT) {
 	case C_OWN_5_BITS :
-		
 		bitmap.resize(file_OffSet - HEADER_SIZE);
 		file.read(bitmap.data(), bitmap.size());
 		bitmap.resize(dataSize);
 		file.read(bitmap.data(), bitmap.size());
 		break;
 	case C_NOT_COMPRESSED:
-		
 		bitmap.resize(file_OffSet - HEADER_SIZE);
 		file.read(bitmap.data(), bitmap.size());
 		bitmap.resize(dataSize);
 		file.read(bitmap.data(), bitmap.size());
 		break;
 		//tutaj dopisaæ kolejne case dla innych 
+	case C_RLE:
+		break;
+	case C_BYTE_RUN:
+		break;
 	}
 
 	
