@@ -1,14 +1,11 @@
-#include <iostream>
-#include "App.h"
+#include "mainwindow.h"
+#include <QApplication>
 
-int main()
+int main(int argc, char *argv[])
 {
+    QApplication a(argc, argv);
+    MainWindow w;
+    w.show();
 
-	App ap;
-	ap.po_nacisnieciu_compress();
-	//ap.poNacisnieciuSave();
-
-
-	system("PAUSE");
-	return 0;
+    return a.exec();
 }

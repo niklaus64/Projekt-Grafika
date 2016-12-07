@@ -12,29 +12,30 @@ void DataImage::WriteDataToSZMIK(std::string pathToWrite)
 		exit(1);
 	}
 
-	//*************************
-	//	//Nag³ówke pliku SZMIK:
-	//	//	-2 bajty id 'SZ'
-	//	//	-4 bajty rodzaj kompresji
-	//	//	-4 bajty szerokosc
-	//	//	-4 bajty wysokosc
-	//	//	-4 bajty wilkosc bitmapy
-	//	//	- duzo bajtow bitmapa
-	//****************************
+//*************************
+//	//Nag³ówke pliku SZMIK:
+//	//	-2 bajty id 'SZ'
+//	//	-4 bajty rodzaj kompresji
+//	//	-4 bajty szerokosc
+//	//	-4 bajty wysokosc
+//	//	-4 bajty wilkosc bitmapy
+//	//	- duzo bajtow bitmapa
+//****************************
+  file << 'S' << 'Z';
+ file.write((char*)&cT, sizeof(compressionType));
+ file.write((char *)&width, sizeof(width));
+   file.write((char *)&height, sizeof(height));
 
-	file << 'S' << 'Z';
-	file.write((char*)&cT, sizeof(compressionType));
-	file.write((char *)&width, sizeof(width));
-	file.write((char *)&height, sizeof(height));
 
-	switch (cT) {
-	case (C_OWN_5_BITS || C_NOT_COMPRESSED ? C_OWN_5_BITS : C_OWN_5_BITS):
-		size_t s = bitmap.size();
-		file.write((char*)&s, sizeof(s));
+    auto s = bitmap.size();
+
+        file.write((char *)&s, sizeof(s));
+
+       // file.write((char*)&s, sizeof(s));
 		for (auto &i : bitmap) file.write((char*)&i,sizeof(i));
 
 		//tutaj dopisaæ kolejne case dla innych 
-	}
+
 
 	file.close();
 }
@@ -59,25 +60,11 @@ void DataImage::LoadFromBMP(std::string path)
 	auto dataSize = ((width * 3 + 3) & (~3)) * height;
 
 
-	switch (cT) {
-	case C_OWN_5_BITS :
 		bitmap.resize(file_OffSet - HEADER_SIZE);
 		file.read(bitmap.data(), bitmap.size());
 		bitmap.resize(dataSize);
 		file.read(bitmap.data(), bitmap.size());
-		break;
-	case C_NOT_COMPRESSED:
-		bitmap.resize(file_OffSet - HEADER_SIZE);
-		file.read(bitmap.data(), bitmap.size());
-		bitmap.resize(dataSize);
-		file.read(bitmap.data(), bitmap.size());
-		break;
-		//tutaj dopisaæ kolejne case dla innych 
-	case C_RLE:
-		break;
-	case C_BYTE_RUN:
-		break;
-	}
+
 
 	
 	file.close();
@@ -93,7 +80,7 @@ void DataImage::LoadFromSZMIK(std::string path)
 	}
 
 
-	const size_t HEADER_SIZE = 18;	//wielkosc nag³owka szmik
+    const size_t HEADER_SIZE = 22;	//wielkosc nag³owka szmik
 	std::array<char, HEADER_SIZE> header;
 
 	file.read(header.data(), header.size());
@@ -103,18 +90,9 @@ void DataImage::LoadFromSZMIK(std::string path)
 	auto dataSize = *reinterpret_cast<size_t*>(&header[14]);
 	
 
-	switch (cT) {
-	case C_OWN_5_BITS:
-		bitmap.resize(dataSize);
-		file.read(bitmap.data(), bitmap.size());
-		break;
-	case C_NOT_COMPRESSED:
-		bitmap.resize(dataSize);
-		file.read(bitmap.data(), bitmap.size());
-		break;
 
-		//dopisaæ reszte do innych kompresji
-	}
+		bitmap.resize(dataSize);
+		file.read(bitmap.data(), bitmap.size());
 	
 	file.close();
 }
@@ -152,7 +130,7 @@ compressionType DataImage::get_cT()
 //rózne kontenery do przechowywania bitmapy to rozne algorytmy skali szarosci
 void DataImage::GrayScale()
 {
-	switch (cT) {
+    /*switch (cT) {
 		case C_OWN_5_BITS:
 		for (unsigned int i = 0,suma=0; i < (width*height*3); i += 3, suma = 0) {
 			suma = (unsigned int)((uint8_t)(bitmap[i])) + (unsigned int)((uint8_t)(bitmap[i+1])) + (unsigned int)((uint8_t)(bitmap[i+2]));
@@ -160,9 +138,9 @@ void DataImage::GrayScale()
 			bitmap[i] = (char)suma;
 			bitmap[i + 1] = (char)suma;
 			bitmap[i + 2] = (char)suma;
-		}
-		break;
-		case C_NOT_COMPRESSED:
+        }*/
+        //break;
+    //	case C_NOT_COMPRESSED:
 			for (unsigned int i = 0, suma = 0; i < (width*height * 3); i += 3, suma = 0) {
 				suma = (unsigned int)((uint8_t)(bitmap[i])) + (unsigned int)((uint8_t)(bitmap[i + 1])) + (unsigned int)((uint8_t)(bitmap[i + 2]));
 				suma /= 3;
@@ -170,10 +148,10 @@ void DataImage::GrayScale()
 				bitmap[i + 1] = (char)suma;
 				bitmap[i + 2] = (char)suma;
 			}
-			break;
+            //break;
 
 		//tutaj dopisaæ kolejne case dla innych 
-	}
+    //}
 }
 
 void DataImage::brightness(int)
