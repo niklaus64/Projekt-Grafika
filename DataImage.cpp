@@ -158,7 +158,7 @@ compressionType DataImage::get_cT()
 //rózne kontenery do przechowywania bitmapy to rozne algorytmy skali szarosci
 void DataImage::GrayScale()
 {
-	switch (cT) {
+    /*switch (cT) {
 		case C_OWN_5_BITS:
 		for (unsigned int i = 0,suma=0; i < (width*height*3); i += 3, suma = 0) {
 			suma = (unsigned int)((uint8_t)(bitmap[i])) + (unsigned int)((uint8_t)(bitmap[i+1])) + (unsigned int)((uint8_t)(bitmap[i+2]));
@@ -166,9 +166,9 @@ void DataImage::GrayScale()
 			bitmap[i] = (char)suma;
 			bitmap[i + 1] = (char)suma;
 			bitmap[i + 2] = (char)suma;
-		}
-		break;
-		case C_NOT_COMPRESSED:
+        }*/
+        //break;
+    //	case C_NOT_COMPRESSED:
 			for (unsigned int i = 0, suma = 0; i < (width*height * 3); i += 3, suma = 0) {
 				suma = (unsigned int)((uint8_t)(bitmap[i])) + (unsigned int)((uint8_t)(bitmap[i + 1])) + (unsigned int)((uint8_t)(bitmap[i + 2]));
 				suma /= 3;
@@ -176,10 +176,10 @@ void DataImage::GrayScale()
 				bitmap[i + 1] = (char)suma;
 				bitmap[i + 2] = (char)suma;
 			}
-			break;
+            //break;
 
 		//tutaj dopisaæ kolejne case dla innych 
-	}
+    //}
 }
 
 void DataImage::brightness(int)
