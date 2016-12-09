@@ -5,7 +5,6 @@
 #include "Enum.h"
 #include <fstream>
 #include <array>
-#include <Windows.h>
 #include <list>
 #include <bitset>
 
@@ -22,6 +21,33 @@ struct pixel
     }
     pixel(const unsigned char _r = 0, const unsigned char _g = 0, const unsigned char _b = 0) : r(_r), g(_g), b(_b) {}
 };
+
+#pragma pack(push,1)
+struct BITMAPFILEHEADER{
+
+    unsigned short bfType;
+    unsigned int bfSize;
+    unsigned int bfOffBits;
+    unsigned short bfReserved1;
+    unsigned short bfReserved2;
+};
+
+
+struct BITMAPINFOHEADER{
+    unsigned int biSize;
+    int biWidth;
+    int biHeight;
+    unsigned short biPlanes;
+    unsigned short biBitCount;
+    unsigned int biCompression;
+    unsigned int biSizeImage;
+    int biYPelsPerMeter;
+    int biXPelsPerMeter;
+    unsigned int biClrUsed;
+    unsigned int biClrImportant;
+};
+#pragma pack( pop )
+
 class DataImage
 {
 	uint32_t width;
@@ -29,17 +55,12 @@ class DataImage
 	uint32_t offset;
 	compressionType cT;
 	
-
-
-
-	
-	
 	void FillBitMapFileHeader(BITMAPFILEHEADER &);
 	void FillBitMapInfoHeader(BITMAPINFOHEADER &);
 public:
 
 
-	std::vector<char> bitmap;
+    std::vector<unsigned char> bitmap;
 	DataImage();
 	DataImage(compressionType);
 	void WriteDataToSZMIK(std::string);

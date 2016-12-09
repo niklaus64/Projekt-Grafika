@@ -1,6 +1,7 @@
 #pragma once
 #include "Algorithm.h"
 
+
 class Own5Bits : public Algorithm
 {
 

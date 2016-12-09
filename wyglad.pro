@@ -14,7 +14,6 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    App.cpp \
     DataImage.cpp \
     NoCompressed.cpp \
     Own5Bits.cpp \
@@ -24,7 +23,6 @@ SOURCES += main.cpp\
 HEADERS  += mainwindow.h \
     RLE.h \
     Algorithm.h \
-    App.h \
     DataImage.h \
     Enum.h \
     NoCompressed.h \

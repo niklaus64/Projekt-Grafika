@@ -71,9 +71,9 @@ void DataImage::LoadFromBMP(std::string path)
 
 		
 		bitmap.resize(file_OffSet - HEADER_SIZE);
-		file.read(bitmap.data(), bitmap.size());
+        file.read((char*)bitmap.data(), bitmap.size());
 		bitmap.resize(dataSize);
-		file.read(bitmap.data(), bitmap.size());
+        file.read((char*)bitmap.data(), bitmap.size());
 
 
 
@@ -103,7 +103,7 @@ void DataImage::LoadFromSZMIK(std::string path)
 
 
 		bitmap.resize(dataSize);
-		file.read(bitmap.data(), bitmap.size());
+        file.read((char*)bitmap.data(), bitmap.size());
 	
 	file.close();
 }
@@ -125,9 +125,9 @@ void DataImage::WriteDataToBMP(std::string path)
 		exit(1);
 	}
 	
-	file.write((char*)&fileHeader, sizeof(fileHeader));
-	file.write((char*)&infoHeader, sizeof(infoHeader));
-	file.write(bitmap.data(), bitmap.size());
+    file.write((char*)&fileHeader, sizeof(fileHeader));
+    file.write((char*)&infoHeader, sizeof(infoHeader));
+    file.write((char*)bitmap.data(), bitmap.size());
 
 	file.close();
 }
@@ -142,13 +142,13 @@ compressionType DataImage::get_cT()
 void DataImage::GrayScale()
 {
 
-			for (unsigned int i = 0, suma = 0; i < (width*height * 3); i += 3, suma = 0) {
-				suma = (unsigned int)((uint8_t)(bitmap[i])) + (unsigned int)((uint8_t)(bitmap[i + 1])) + (unsigned int)((uint8_t)(bitmap[i + 2]));
-				suma /= 3;
-				bitmap[i] = (char)suma;
-				bitmap[i + 1] = (char)suma;
-				bitmap[i + 2] = (char)suma;
-			}
+           for (unsigned int i = 0, suma = 0; i < (width*height * 3); i += 3, suma = 0) {
+                suma = (unsigned int)(bitmap[i]) + (unsigned int)(bitmap[i + 1]) + (unsigned int)(bitmap[i + 2]);
+                suma /= 3;
+                bitmap[i] = (char)suma;
+                bitmap[i + 1] = (char)suma;
+                bitmap[i + 2] = (char)suma;
+            }
 
 }
 
@@ -165,26 +165,29 @@ void DataImage::contrast(int)
 
 void DataImage::FillBitMapFileHeader(BITMAPFILEHEADER &fileHeader)
 {
-	fileHeader.bfType = 'MB';
-    fileHeader.bfSize = 54 +  sizeof(bitmap);
+    fileHeader.bfType = 'BM';
+    fileHeader.bfSize = 54 +  (uint32_t)sizeof(bitmap);
 	fileHeader.bfOffBits = 54;
 	fileHeader.bfReserved1 = 0;
 	fileHeader.bfReserved2 = 0;
+
 }
 
 void DataImage::FillBitMapInfoHeader(BITMAPINFOHEADER & infoHeader)
 {
+
 	infoHeader.biSize = 40;
 	infoHeader.biWidth = width;
 	infoHeader.biHeight = height;
 	infoHeader.biPlanes = 1;
 	infoHeader.biBitCount = 24;
 	infoHeader.biCompression = 0;
-    infoHeader.biSizeImage =sizeof(bitmap) ;
+    infoHeader.biSizeImage = sizeof(bitmap) ;
 	infoHeader.biClrUsed = 0;
 	infoHeader.biYPelsPerMeter = 0;
 	infoHeader.biXPelsPerMeter = 0;
 	infoHeader.biClrImportant = 0;
+
 }
 
 DataImage::~DataImage()

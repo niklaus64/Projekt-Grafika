@@ -26,6 +26,8 @@ class MainWindow : public QMainWindow
 
     compressionType cT;
     Algorithm *al;
+
+
     Q_OBJECT
 
 public:

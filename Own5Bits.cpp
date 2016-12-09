@@ -24,7 +24,7 @@ Own5Bits::~Own5Bits()
 void Own5Bits::decompress(DataImage &im)
 {
 	const int nbits = 5;
-	std::vector<char>temp;
+    std::vector<unsigned char>temp;
 	temp.push_back('0');
 
 	for (unsigned int n = nbits - 1, m = 7, j = 0, k = 0; j<im.bitmap.size()-1; n--, m--) {
@@ -59,7 +59,7 @@ void Own5Bits::compress()
 		i >>= (8 - nbits);
 	}
 
-	std::vector<char> imgCompressed;
+    std::vector<unsigned char> imgCompressed;
 	imgCompressed.push_back('0');
 	for (unsigned int n = nbits - 1, m = 7, j = 0, k = 0; j<di->bitmap.size() ; n--, m--) {
 
