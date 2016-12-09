@@ -19,14 +19,17 @@ void MainWindow::on_pushButton_2_clicked()
     compressionType mode;
     if(ui->radioButton_3->isChecked()) mode=C_OWN_5_BITS;
     else if(ui->radioButton_2->isChecked()) mode=C_BYTE_RUN;
-    else if(ui->radioButton_3->isChecked()) mode=C_RLE;
+    else if(ui->radioButton_4->isChecked()) mode=C_RLE;
     else if(ui->radioButton_5->isChecked())mode=C_NOT_COMPRESSED;
 
     QString pathToSave;
     switch (mode)
     {
     case C_RLE:
-        //al = new RLE();
+        pathToSave = QFileDialog::getSaveFileName(this,tr("Save..."),"./","SZMIK (*.szmik)");
+        al = new RLE(pathToBMP.toStdString(),0,0,ui->radioButton->isChecked()); // kolejno: sciezka do plik, stopien jasnoci, stopien kontrastu, skala szarosci
+        al->compress();
+        al->saveToFile(pathToSave.toStdString());
         break;
     case C_BYTE_RUN:
         //al = new ByteRun();

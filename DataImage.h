@@ -8,6 +8,20 @@
 #include <Windows.h>
 #include <list>
 #include <bitset>
+
+struct pixel
+{
+    unsigned char r;
+    unsigned char g;
+    unsigned char b;
+
+    bool operator==(pixel &p) const
+    {
+        if ((r == p.r) && (g == p.g) && (b == p.b)) return true;
+        else return false;
+    }
+    pixel(const unsigned char _r = 0, const unsigned char _g = 0, const unsigned char _b = 0) : r(_r), g(_g), b(_b) {}
+};
 class DataImage
 {
 	uint32_t width;
@@ -16,18 +30,7 @@ class DataImage
 	compressionType cT;
 	
 
-	struct pixel
-	{
-		unsigned char r;
-		unsigned char g;
-		unsigned char b;
 
-		bool operator==(pixel &p) const
-		{
-			if ((r == p.r) && (g == p.g) && (b == p.b)) return true;
-			else return false;
-		}
-	};
 
 	
 	
@@ -35,7 +38,7 @@ class DataImage
 	void FillBitMapInfoHeader(BITMAPINFOHEADER &);
 public:
 
-	std::vector<pixel> pixmap;
+
 	std::vector<char> bitmap;
 	DataImage();
 	DataImage(compressionType);
