@@ -21,7 +21,7 @@ Own5Bits::~Own5Bits()
 
 
 
-void Own5Bits::decompress(DataImage &im)
+void Own5Bits::decompress()
 {
 	const int nbits = 5;
 	std::vector<char>temp;

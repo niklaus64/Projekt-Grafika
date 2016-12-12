@@ -33,9 +33,8 @@ class DataImage
 	void FillBitMapFileHeader(BITMAPFILEHEADER &);
 	void FillBitMapInfoHeader(BITMAPINFOHEADER &);
 public:
-	std::vector<unsigned char> bitmap;
-	DataImage();
-	DataImage(compressionType);
+    std::vector<char> bitmap;
+    DataImage(compressionType cT = C_NOT_COMPRESSED);
 	void WriteDataToSZMIK(std::string);
 	void LoadFromBMP(std::string);
 	void LoadFromSZMIK(std::string);

@@ -1,7 +1,7 @@
 #include "DataImage.h"
 
 
-DataImage::DataImage(compressionType _cT = C_NOT_COMPRESSED) : cT(_cT) {};
+DataImage::DataImage(compressionType _cT) : cT(_cT) {};
 
 void DataImage::WriteDataToSZMIK(std::string pathToWrite)
 {
@@ -168,7 +168,7 @@ void DataImage::contrast(int)
 void DataImage::FillBitMapFileHeader(BITMAPFILEHEADER &fileHeader)
 {
 	fileHeader.bfType = 'MB';
-	fileHeader.bfSize = 54 + (cT == C_OWN_5_BITS || cT == C_NOT_COMPRESSED ? sizeof(bitmap) : sizeof(pixmap));
+    fileHeader.bfSize = 54 + sizeof(bitmap);
 	fileHeader.bfOffBits = 54;
 	fileHeader.bfReserved1 = 0;
 	fileHeader.bfReserved2 = 0;
@@ -182,7 +182,7 @@ void DataImage::FillBitMapInfoHeader(BITMAPINFOHEADER & infoHeader)
 	infoHeader.biPlanes = 1;
 	infoHeader.biBitCount = 24;
 	infoHeader.biCompression = 0;
-	infoHeader.biSizeImage = (cT==C_OWN_5_BITS || cT==C_NOT_COMPRESSED ? sizeof(bitmap) : sizeof(pixmap));
+    infoHeader.biSizeImage = sizeof(bitmap);
 	infoHeader.biClrUsed = 0;
 	infoHeader.biYPelsPerMeter = 0;
 	infoHeader.biXPelsPerMeter = 0;
