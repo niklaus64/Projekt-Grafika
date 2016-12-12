@@ -9,7 +9,7 @@
 #include <QMessageBox>
 #include <QFileDialog>
 #include "decompress.h"
-
+#include "byterun.h"
 namespace Ui {
 class MainWindow;
 }

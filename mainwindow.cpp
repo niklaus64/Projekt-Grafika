@@ -35,7 +35,13 @@ void MainWindow::on_pushButton_2_clicked()
         }
         break;
     case C_BYTE_RUN:
-        //al = new ByteRun();
+        pathToSave = QFileDialog::getSaveFileName(this,tr("Save..."),"./","SZMIK (*.szmik)");
+        if(!pathToSave.isEmpty()){
+        al = new ByteRun(pathToBMP.toStdString(),0,0,ui->radioButton->isChecked());
+        al->compress();
+        al->saveToFile(pathToSave.toStdString());
+        QMessageBox::information(this,"Jest juz SZMIK","utworzono nowego SZMIKa!");
+        }
         break;
     case C_OWN_5_BITS:
         pathToSave = QFileDialog::getSaveFileName(this,tr("Save..."),"./","SZMIK (*.szmik)");

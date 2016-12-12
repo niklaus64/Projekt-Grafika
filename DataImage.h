@@ -19,6 +19,12 @@ struct pixel
         if ((r == p.r) && (g == p.g) && (b == p.b)) return true;
         else return false;
     }
+
+    bool operator !=(pixel &p) const
+    {
+        if((r!=p.r) || (g!=p.g) || (b!=p.b)) return true;
+        else return false;
+    }
     pixel(const unsigned char _r = 0, const unsigned char _g = 0, const unsigned char _b = 0) : r(_r), g(_g), b(_b) {}
 };
 
@@ -63,6 +69,8 @@ public:
     std::vector<unsigned char> bitmap;
 	DataImage();
 	DataImage(compressionType);
+    uint32_t getWidth();
+    uint32_t getHeight();
 	void WriteDataToSZMIK(std::string);
 	void LoadFromBMP(std::string);
 	void LoadFromSZMIK(std::string);

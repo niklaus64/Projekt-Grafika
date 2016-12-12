@@ -35,6 +35,9 @@ void Decompress::on_pushButton_clicked()
     case C_RLE:
         RLE::decompress(i);
         break;
+    case C_BYTE_RUN:
+        ByteRun::decompress(i);
+        break;
 
     }
 

@@ -190,6 +190,13 @@ void DataImage::FillBitMapInfoHeader(BITMAPINFOHEADER & infoHeader)
 
 }
 
+uint32_t DataImage::getWidth(){
+    return width;
+}
+uint32_t DataImage::getHeight(){
+    return height;
+}
+
 DataImage::~DataImage()
 {
 

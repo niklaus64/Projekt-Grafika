@@ -1,11 +1,16 @@
-#ifndef BYTERUN_H
-#define BYTERUN_H
+#pragma once
+#include "Algorithm.h"
 
-
-class ByteRun
+class ByteRun : public Algorithm
 {
+private:
+   pixel getPixel(int);
 public:
-    ByteRun();
+    ByteRun(std::string,int,int,bool);
+    ~ByteRun();
+    static void decompress(DataImage&);
+    void compress();
+    void saveToFile(std::string);
 };
 
-#endif // BYTERUN_H
+

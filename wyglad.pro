@@ -18,7 +18,8 @@ SOURCES += main.cpp\
     NoCompressed.cpp \
     Own5Bits.cpp \
     RLE.cpp \
-    decompress.cpp
+    decompress.cpp \
+    ByteRun.cpp
 
 HEADERS  += mainwindow.h \
     RLE.h \
@@ -27,7 +28,8 @@ HEADERS  += mainwindow.h \
     Enum.h \
     NoCompressed.h \
     Own5Bits.h \
-    decompress.h
+    decompress.h \
+    ByteRun.h
 
 FORMS    += mainwindow.ui \
     decompress.ui
