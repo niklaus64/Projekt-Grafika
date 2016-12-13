@@ -74,6 +74,8 @@ void MainWindow::on_actionOtw_rz_triggered()
     else  image=image.scaledToWidth(ui->label_3->geometry().height(),Qt::FastTransformation);
     ui->label_3->setPixmap(QPixmap::fromImage(image));
     ui->pushButton_2->setEnabled(!pathToBMP.isNull());
+    ui->groupBox->setEnabled(!pathToBMP.isNull());
+    ui->groupBox_2->setEnabled(!pathToBMP.isNull());
 }
 
 void MainWindow::on_actionRozpakuj_triggered()
