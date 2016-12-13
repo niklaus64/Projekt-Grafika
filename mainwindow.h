@@ -22,7 +22,7 @@ class MainWindow : public QMainWindow
     const std::string PATH_TO_SAVE_FILE_SZMIK = "wynik.szmik";
     const std::string PATH_TO_SAVE_FILE_BMP = "wynik.bmp";
     QString pathToBMP;
-
+    QImage image;
 
     compressionType cT;
     Algorithm *al;
@@ -40,6 +40,14 @@ private slots:
     void on_actionOtw_rz_triggered();
 
     void on_actionRozpakuj_triggered();
+
+    void on_radioButton_pressed();
+
+    void on_pushButton_clicked();
+
+    void on_radioButton_released();
+
+    void on_radioButton_clicked();
 
 private:
     Ui::MainWindow *ui;

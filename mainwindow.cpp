@@ -68,6 +68,11 @@ void MainWindow::on_pushButton_2_clicked()
 void MainWindow::on_actionOtw_rz_triggered()
 {
     pathToBMP = QFileDialog::getOpenFileName(this,tr("Open file"),"./","bmp (*.bmp)");
+    image.load(pathToBMP);
+
+    if(image.width()>image.height()) image=image.scaledToWidth(ui->label_3->geometry().width(),Qt::FastTransformation);
+    else  image=image.scaledToWidth(ui->label_3->geometry().height(),Qt::FastTransformation);
+    ui->label_3->setPixmap(QPixmap::fromImage(image));
     ui->pushButton_2->setEnabled(!pathToBMP.isNull());
 }
 
@@ -76,4 +81,40 @@ void MainWindow::on_actionRozpakuj_triggered()
     Decompress dec;
     dec.setModal(true);
     dec.exec();
+}
+
+void MainWindow::on_radioButton_pressed()
+{
+
+}
+void MainWindow::on_radioButton_released()
+{
+
+}
+
+void MainWindow::on_radioButton_clicked()
+{
+    if(!ui->radioButton->isChecked()){
+        image.load(pathToBMP);
+        if(image.width()>image.height()) image=image.scaledToWidth(ui->label_3->geometry().width(),Qt::FastTransformation);
+        else  image=image.scaledToWidth(ui->label_3->geometry().height(),Qt::FastTransformation);
+         ui->label_3->setPixmap(QPixmap::fromImage(image));
+    }else{
+        for (int ii = 0; ii < image.height(); ii++) {
+            uchar* scan = image.scanLine(ii);
+            int depth =4;
+            for (int jj = 0; jj < image.width(); jj++) {
+
+                QRgb* rgbpixel = reinterpret_cast<QRgb*>(scan + jj*depth);
+                int gray = qGray(*rgbpixel);
+                *rgbpixel = QColor(gray, gray, gray).rgba();
+            }
+        }
+        ui->label_3->setPixmap(QPixmap::fromImage(image));
+    }
+}
+
+void MainWindow::on_pushButton_clicked()
+{
+
 }

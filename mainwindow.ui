@@ -29,10 +29,10 @@
     <widget class="QRadioButton" name="radioButton">
      <property name="geometry">
       <rect>
-       <x>-10</x>
+       <x>10</x>
        <y>20</y>
-       <width>161</width>
-       <height>17</height>
+       <width>141</width>
+       <height>20</height>
       </rect>
      </property>
      <property name="layoutDirection">
@@ -224,6 +224,9 @@
     </property>
     <property name="text">
      <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
   </widget>
