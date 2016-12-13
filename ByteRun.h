@@ -4,7 +4,7 @@
 class ByteRun : public Algorithm
 {
 private:
-   pixel getPixel(int);
+   pixel getPixel(unsigned int);
 public:
     ByteRun(std::string,int,int,bool);
     ~ByteRun();

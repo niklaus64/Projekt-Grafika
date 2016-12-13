@@ -113,7 +113,7 @@ void DataImage::WriteDataToBMP(std::string path)
 	BITMAPFILEHEADER fileHeader;
 	BITMAPINFOHEADER infoHeader;
 	 
-	FillBitMapFileHeader(fileHeader); //wypelnianie nag³owka BMP
+    FillBitMapFileHeader(fileHeader); //wypelnianie nag³owka BMP
 	FillBitMapInfoHeader(infoHeader); //wypelnianie nag³owka bmp
 	
 
@@ -137,8 +137,7 @@ compressionType DataImage::get_cT()
 	return cT;
 }
 
-//skale szarosci dla roznych kompresji niestety :(
-//rózne kontenery do przechowywania bitmapy to rozne algorytmy skali szarosci
+
 void DataImage::GrayScale()
 {
 
@@ -165,8 +164,8 @@ void DataImage::contrast(int)
 
 void DataImage::FillBitMapFileHeader(BITMAPFILEHEADER &fileHeader)
 {
-    fileHeader.bfType = 'BM';
-    fileHeader.bfSize = 54 +  (uint32_t)sizeof(bitmap);
+    fileHeader.bfType = 'MB';
+    fileHeader.bfSize = 54 +  (uint64_t)sizeof(bitmap);
 	fileHeader.bfOffBits = 54;
 	fileHeader.bfReserved1 = 0;
 	fileHeader.bfReserved2 = 0;
