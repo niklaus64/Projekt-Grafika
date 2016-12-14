@@ -10,6 +10,9 @@
 #include <QFileDialog>
 #include "decompress.h"
 #include "byterun.h"
+#include <QByteArray>
+#include <QBuffer>
+//#include <QFIle>
 namespace Ui {
 class MainWindow;
 }
@@ -23,7 +26,7 @@ class MainWindow : public QMainWindow
     const std::string PATH_TO_SAVE_FILE_BMP = "wynik.bmp";
     QString pathToBMP;
     QImage image;
-
+    QImage smallOryginalCopy;
     compressionType cT;
     Algorithm *al;
 
@@ -48,6 +51,8 @@ private slots:
     void on_radioButton_released();
 
     void on_radioButton_clicked();
+
+    void on_pushButton_3_clicked();
 
 private:
     Ui::MainWindow *ui;

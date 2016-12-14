@@ -7,7 +7,7 @@
 #include <array>
 #include <list>
 #include <bitset>
-#include <Windows.h>
+
 struct pixel
 {
     unsigned char r;
@@ -28,9 +28,9 @@ struct pixel
     pixel(const unsigned char _r = 0, const unsigned char _g = 0, const unsigned char _b = 0) : r(_r), g(_g), b(_b) {}
 };
 
-/*
+
 #pragma pack(push,1)
-struct BITMAPFILEHEADERw{
+struct BITMAPFILEHEADER{
 
     unsigned short bfType;
     unsigned int bfSize;
@@ -40,7 +40,7 @@ struct BITMAPFILEHEADERw{
 };
 
 
-struct BITMAPINFOHEADERw{
+struct BITMAPINFOHEADER{
     unsigned int biSize;
     int biWidth;
     int biHeight;
@@ -54,7 +54,7 @@ struct BITMAPINFOHEADERw{
     unsigned int biClrImportant;
 };
 #pragma pack( pop )
-*/
+
 class DataImage
 {
 	uint32_t width;
