@@ -14,22 +14,22 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    App.cpp \
     DataImage.cpp \
     NoCompressed.cpp \
     Own5Bits.cpp \
     RLE.cpp \
-    decompress.cpp
+    decompress.cpp \
+    ByteRun.cpp
 
 HEADERS  += mainwindow.h \
     RLE.h \
     Algorithm.h \
-    App.h \
     DataImage.h \
     Enum.h \
     NoCompressed.h \
     Own5Bits.h \
-    decompress.h
+    decompress.h \
+    ByteRun.h
 
 FORMS    += mainwindow.ui \
     decompress.ui

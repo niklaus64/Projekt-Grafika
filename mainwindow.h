@@ -9,7 +9,7 @@
 #include <QMessageBox>
 #include <QFileDialog>
 #include "decompress.h"
-
+#include "byterun.h"
 namespace Ui {
 class MainWindow;
 }
@@ -26,6 +26,8 @@ class MainWindow : public QMainWindow
 
     compressionType cT;
     Algorithm *al;
+
+
     Q_OBJECT
 
 public:

@@ -7,6 +7,7 @@
 #include "Enum.h"
 #include "Own5Bits.h"
 #include "NoCompressed.h"
+#include "byterun.h"
 namespace Ui {
 class Decompress;
 }

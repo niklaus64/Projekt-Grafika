@@ -31,10 +31,16 @@ void Decompress::on_pushButton_clicked()
     switch (i.get_cT()) {
     case C_OWN_5_BITS:
         Own5Bits::decompress(i);
-
+        break;
+    case C_RLE:
+        RLE::decompress(i);
+        break;
+    case C_BYTE_RUN:
+        ByteRun::decompress(i);
+        break;
 
     }
 
     i.WriteDataToBMP(ui->lineEdit_2->text().toStdString());
-    ui->label_3->setText("ROZAPKOWANO POMYŚLNIE");
+    ui->label_3->setText("ROZPAKOWANO POMYŚLNIE");
 }

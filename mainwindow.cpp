@@ -19,33 +19,50 @@ void MainWindow::on_pushButton_2_clicked()
     compressionType mode;
     if(ui->radioButton_3->isChecked()) mode=C_OWN_5_BITS;
     else if(ui->radioButton_2->isChecked()) mode=C_BYTE_RUN;
-    else if(ui->radioButton_3->isChecked()) mode=C_RLE;
+    else if(ui->radioButton_4->isChecked()) mode=C_RLE;
     else if(ui->radioButton_5->isChecked())mode=C_NOT_COMPRESSED;
 
     QString pathToSave;
     switch (mode)
     {
     case C_RLE:
-        //al = new RLE();
+        pathToSave = QFileDialog::getSaveFileName(this,tr("Save..."),"./","SZMIK (*.szmik)");
+        if(!pathToSave.isEmpty()){
+        al = new RLE(pathToBMP.toStdString(),0,0,ui->radioButton->isChecked()); // kolejno: sciezka do plik, stopien jasnoci, stopien kontrastu, skala szarosci
+        al->compress();
+        al->saveToFile(pathToSave.toStdString());
+        QMessageBox::information(this,"Jest juz SZMIK","utworzono nowego SZMIKa!");
+        }
         break;
     case C_BYTE_RUN:
-        //al = new ByteRun();
+        pathToSave = QFileDialog::getSaveFileName(this,tr("Save..."),"./","SZMIK (*.szmik)");
+        if(!pathToSave.isEmpty()){
+        al = new ByteRun(pathToBMP.toStdString(),0,0,ui->radioButton->isChecked());
+        al->compress();
+        al->saveToFile(pathToSave.toStdString());
+        QMessageBox::information(this,"Jest juz SZMIK","utworzono nowego SZMIKa!");
+        }
         break;
     case C_OWN_5_BITS:
         pathToSave = QFileDialog::getSaveFileName(this,tr("Save..."),"./","SZMIK (*.szmik)");
+         if(!pathToSave.isEmpty()){
         al = new Own5Bits(pathToBMP.toStdString(),0,0,ui->radioButton->isChecked()); // kolejno: sciezka do plik, stopien jasnoci, stopien kontrastu, skala szarosci
         al->compress();
         al->saveToFile(pathToSave.toStdString());
+        QMessageBox::information(this,"Jest juz SZMIK","utworzono nowego SZMIKa!");
+         }
         break;
     case C_NOT_COMPRESSED:
         pathToSave = QFileDialog::getSaveFileName(this,tr("Save..."),"./","BMP (*.bmp)");
-        al = new NoCompressed(PATH_TO_FILE_BMP, 0, 0, ui->radioButton->isChecked());
+         if(!pathToSave.isEmpty()){
+        al = new NoCompressed(pathToBMP.toStdString(), 0, 0, ui->radioButton->isChecked());
         al->saveToFile(pathToSave.toStdString());
-
+        QMessageBox::information(this,"Jest juz SZMIK","utworzono nowego SZMIKa!");
+        }
         break;
     }
 
-   QMessageBox::information(this,"Jest juz SZMIK","utworzono nowego SZMIKa!");
+
 }
 
 void MainWindow::on_actionOtw_rz_triggered()
