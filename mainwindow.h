@@ -22,10 +22,7 @@ class MainWindow;
 class MainWindow : public QMainWindow
 {
 
-    const std::string PATH_TO_FILE_BMP = "3.bmp";
-    const std::string PATH_TO_FILE_SZMIK = "wynik.szmik";
-    const std::string PATH_TO_SAVE_FILE_SZMIK = "wynik.szmik";
-    const std::string PATH_TO_SAVE_FILE_BMP = "wynik.bmp";
+
     QString pathToBMP;
     QImage image;
     QImage smallOryginalCopy;

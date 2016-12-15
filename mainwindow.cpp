@@ -5,11 +5,12 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    brightnessValue=0;
+    contrastValue=0;
     ui->setupUi(this);
 
 
-     brightnessValue=0;
-     contrastValue=0;
+
 }
 
 MainWindow::~MainWindow()
