@@ -34,9 +34,9 @@ struct BITMAPFILEHEADER{
 
     unsigned short bfType;
     unsigned int bfSize;
-    unsigned int bfOffBits;
     unsigned short bfReserved1;
     unsigned short bfReserved2;
+    unsigned int bfOffBits;
 };
 
 

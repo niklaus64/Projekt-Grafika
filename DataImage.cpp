@@ -165,7 +165,7 @@ void DataImage::contrast(int)
 void DataImage::FillBitMapFileHeader(BITMAPFILEHEADER &fileHeader)
 {
     fileHeader.bfType = 'MB';
-    fileHeader.bfSize = 54 +  (uint64_t)sizeof(bitmap);
+    fileHeader.bfSize = (size_t)54 + sizeof(bitmap);
 	fileHeader.bfOffBits = 54;
 	fileHeader.bfReserved1 = 0;
 	fileHeader.bfReserved2 = 0;
