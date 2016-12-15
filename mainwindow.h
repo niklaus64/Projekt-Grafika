@@ -2,17 +2,19 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QByteArray>
+#include <QBuffer>
+#include <QMessageBox>
+#include <QFileDialog>
+
 #include "RLE.h"
 #include "Enum.h"
 #include "Own5Bits.h"
 #include "NoCompressed.h"
-#include <QMessageBox>
-#include <QFileDialog>
 #include "decompress.h"
 #include "byterun.h"
-#include <QByteArray>
-#include <QBuffer>
-//#include <QFIle>
+#include "cmath"
+
 namespace Ui {
 class MainWindow;
 }
@@ -31,6 +33,8 @@ class MainWindow : public QMainWindow
     Algorithm *al;
 
 
+    int brightnessValue;
+    int contrastValue;
     Q_OBJECT
 
 public:
@@ -53,6 +57,12 @@ private slots:
     void on_radioButton_clicked();
 
     void on_pushButton_3_clicked();
+
+    void on_horizontalSlider_valueChanged(int value);
+
+    void modyfikuj(int,int,bool);
+
+    void on_horizontalSlider_2_valueChanged(int value);
 
 private:
     Ui::MainWindow *ui;

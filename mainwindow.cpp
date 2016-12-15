@@ -7,6 +7,9 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+
+     brightnessValue=0;
+     contrastValue=0;
 }
 
 MainWindow::~MainWindow()
@@ -120,24 +123,104 @@ void MainWindow::on_radioButton_released()
 
 void MainWindow::on_radioButton_clicked()
 {
-    if(!ui->radioButton->isChecked()){
-        image=smallOryginalCopy;
-         ui->label_3->setPixmap(QPixmap::fromImage(image));
-    }else{
+    modyfikuj(contrastValue, brightnessValue, ui->radioButton->isChecked());
+}
+
+
+
+
+
+
+
+void MainWindow::on_horizontalSlider_valueChanged(int value)
+{
+    brightnessValue=value;
+    modyfikuj(contrastValue,brightnessValue,ui->radioButton->isChecked());
+}
+
+void MainWindow::on_horizontalSlider_2_valueChanged(int value)
+{
+    contrastValue = value;
+    modyfikuj(contrastValue,brightnessValue,ui->radioButton->isChecked());
+}
+
+
+void MainWindow::modyfikuj(int contrastValue, int brightnessValue, bool grayMode){
+
+    image=smallOryginalCopy;
+
         for (int ii = 0; ii < image.height(); ii++) {
             uchar* scan = image.scanLine(ii);
             int depth =4;
             for (int jj = 0; jj < image.width(); jj++) {
 
                 QRgb* rgbpixel = reinterpret_cast<QRgb*>(scan + jj*depth);
-                int gray = qGray(*rgbpixel);
-                *rgbpixel = QColor(gray, gray, gray).rgba();
+
+                if(grayMode){
+                    int gray = qGray(*rgbpixel);
+                    *rgbpixel = QColor(gray, gray, gray).rgba();
+                }
+
+                if(contrastValue){
+                    double a;
+                    if(contrastValue<=0){
+                         a=1.0 + (contrastValue/256.0);
+                    }else{
+                         a=256.0/pow(2,log2(257-contrastValue));
+                    }
+                    int red = [](double p, int color)->int {
+                                        if((p*(color-(255/2))+(255/2))<0) return 0;
+                                        else if ((p*(color-(255/2))+(255/2))>=0 && (p*(color-(255/2))+(255/2))<=255) return (p*(color-(255/2))+(255/2));
+                                        else return 255;
+                                }(a,qRed(*rgbpixel));
+
+
+                    int green = [](double p, int color)->int {
+                                         if((p*(color-(255/2))+(255/2))<0) return 0;
+                                         else if ((p*(color-(255/2))+(255/2))>=0 && (p*(color-(255/2))+(255/2))<=255) return (p*(color-(255/2))+(255/2));
+                                         else return 255;
+                                }(a,qGreen(*rgbpixel));
+
+
+                    int blue = [](double p, int color)->int {
+                                          if((p*(color-(255/2))+(255/2))<0) return 0;
+                                          else if ((p*(color-(255/2))+(255/2))>=0 && (p*(color-(255/2))+(255/2))<=255) return (p*(color-(255/2))+(255/2));
+                                          else return 255;
+                                }(a,qBlue(*rgbpixel));
+
+                    *rgbpixel = QColor(red, green, blue).rgba();
+                }
+
+
+                if(brightnessValue){
+                    int red = [](int p, int color)->int {
+                                                        if(color+p<0) return 0;
+                                                        else if (color+p>=0 && color+p<=255) return p+color;
+                                                        else return 255;
+                                }(brightnessValue,qRed(*rgbpixel));
+
+
+                    int green = [](int p, int color)->int {
+                        if(color+p<0) return 0;
+                        else if (color+p>=0 && color+p<=255) return p+color;
+                        else return 255;
+                    }(brightnessValue,qGreen(*rgbpixel));
+
+
+                    int blue = [](int p, int color)->int {
+                        if(color+p<0) return 0;
+                        else if (color+p>=0 && color+p<=255) return p+color;
+                        else return 255;
+                    }(brightnessValue,qBlue(*rgbpixel));
+
+                    *rgbpixel = QColor(red, green, blue).rgba();
+                }
             }
         }
+
+
         ui->label_3->setPixmap(QPixmap::fromImage(image));
-    }
+
 }
-
-
 
 
