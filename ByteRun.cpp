@@ -108,14 +108,12 @@ temp.clear();
 
 pixel ByteRun::getPixel(unsigned int i) {
     pixel temp1;
-    uint32_t roznicaSzer =  ((di->getWidth() * 3 + 3) & (~3)) - di->getWidth()*3 ;
-
-    int c = (i / di->getWidth() )*roznicaSzer;
 
 
-    temp1.b = di->bitmap.at(i * 3 + c);
-    temp1.g = di->bitmap.at(i * 3 + c +1);
-    temp1.r = di->bitmap.at(i * 3 + c + 2);
+
+    temp1.b = di->bitmap.at(i * 3 );
+    temp1.g = di->bitmap.at(i * 3 +1);
+    temp1.r = di->bitmap.at(i * 3 + 2);
 
     return temp1;
 }

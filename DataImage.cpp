@@ -65,15 +65,12 @@ void DataImage::LoadFromBMP(std::string path)
 	height = *reinterpret_cast<uint32_t *>(&header[22]);
 	auto file_OffSet = *reinterpret_cast<uint32_t*>(&header[10]);
 	
-	auto dataSize = ((width * 3 + 3) & (~3)) * height;
-
-
-
-		
-		bitmap.resize(file_OffSet - HEADER_SIZE);
-        file.read((char*)bitmap.data(), bitmap.size());
-		bitmap.resize(dataSize);
-        file.read((char*)bitmap.data(), bitmap.size());
+    bitmap.resize(width*height * 3);
+    for (unsigned int i	= 0; i < height; i++)
+    {
+        file.read((char*)(bitmap.data() + i*width * 3), width * 3);
+        file.ignore(((width * 3 + 3) & (~3)) - width * 3);
+    }
 
 
 
@@ -127,8 +124,16 @@ void DataImage::WriteDataToBMP(std::string path)
 	
     file.write((char*)&fileHeader, sizeof(fileHeader));
     file.write((char*)&infoHeader, sizeof(infoHeader));
-    file.write((char*)bitmap.data(), bitmap.size());
 
+    for (unsigned int i = 0 ; i < height; i++)
+        {
+
+            file.write((char*)bitmap.data() + i*width * 3, width * 3);
+
+            file.write((char*)0, (((width * 3 + 3) & (~3)) - (width * 3)));
+
+
+        }
 	file.close();
 }
 
