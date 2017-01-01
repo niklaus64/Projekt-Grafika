@@ -1,35 +1,26 @@
 #include "Own5Bits.h"
 
 
-
-Own5Bits::Own5Bits(std::string path, int jasnosc, int kontrast, bool skalaSzarosci)
+Own5Bits::Own5Bits(DataImage *data)
 {
-
-	di = new DataImage(C_OWN_5_BITS);
-	di->LoadFromBMP(path);
-	if (skalaSzarosci) di->GrayScale();
-	if (jasnosc != 0)di->brightness(jasnosc);
-	if (kontrast != 0)di->contrast(kontrast);
-	
-	
+	di = data;
 }
 
 
 Own5Bits::~Own5Bits()
 {
+	delete di;
 }
 
-
-
-void Own5Bits::decompress(DataImage &im)
+void Own5Bits::decompress()
 {
 	const int nbits = 5;
     std::vector<unsigned char>temp;
 	temp.push_back('0');
 
-	for (unsigned int n = nbits - 1, m = 7, j = 0, k = 0; j<im.bitmap.size()-1; n--, m--) {
+	for (unsigned int n = nbits - 1, m = 7, j = 0, k = 0; j<di->bitmap.size()-1; n--, m--) {
 
-		if (im.bitmap[j] & 1 << m) temp[k] |= 1 << n;
+		if (di->bitmap[j] & 1 << m) temp[k] |= 1 << n;
 		else temp[k] &= ~(1 << n);
 
 
@@ -45,8 +36,8 @@ void Own5Bits::decompress(DataImage &im)
 		}
 	}
 
-	im.bitmap.assign(temp.begin(), temp.end());
-	for (auto &i : im.bitmap) {
+	di->bitmap.assign(temp.begin(), temp.end());
+	for (auto &i : di->bitmap) {
 		i <<= (8 - nbits);
 	}
 	
@@ -81,9 +72,4 @@ void Own5Bits::compress()
 
 	di->bitmap.assign(imgCompressed.begin(),imgCompressed.end());
 	imgCompressed.clear();
-}
-
-void Own5Bits::saveToFile(std::string path)
-{
-	di->WriteDataToSZMIK(path);
 }

@@ -6,11 +6,10 @@ class ByteRun : public Algorithm
 private:
    pixel getPixel(unsigned int);
 public:
-    ByteRun(std::string,int,int,bool);
-    ~ByteRun();
-    static void decompress(DataImage&);
+	ByteRun(DataImage* di = nullptr);
     void compress();
-    void saveToFile(std::string);
+    void decompress();
+    ~ByteRun();
 };
 
 

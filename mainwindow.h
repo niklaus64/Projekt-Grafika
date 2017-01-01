@@ -10,7 +10,6 @@
 #include "RLE.h"
 #include "Enum.h"
 #include "Own5Bits.h"
-#include "NoCompressed.h"
 #include "decompress.h"
 #include "byterun.h"
 #include "cmath"
@@ -21,14 +20,11 @@ class MainWindow;
 
 class MainWindow : public QMainWindow
 {
-
-
     QString pathToBMP;
     QImage image;
     QImage smallOryginalCopy;
-    compressionType cT;
     Algorithm *al;
-
+	DataImage data;
 
     int brightnessValue;
     int contrastValue;

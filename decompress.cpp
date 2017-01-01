@@ -15,32 +15,40 @@ Decompress::~Decompress()
 
 void Decompress::on_toolButton_clicked()
 {
-    ui->lineEdit->setText(QFileDialog::getOpenFileName(this,tr("Open file"),"./","SZMIK (*.szmik)"));
+	ui->lineEdit->setText(QFileDialog::getOpenFileName(this, tr("Open file"), "./", "Pliki skompresowane (*.szmik *.rle *.br)"));
 }
 
 void Decompress::on_toolButton_2_clicked()
 {
-    ui->lineEdit_2->setText(QFileDialog::getSaveFileName(this,tr("Save BMP file"),"./","BMP (*.bmp)"));
+    ui->lineEdit_2->setText(QFileDialog::getSaveFileName(this,tr("Save BMP file"),"./", "BMP (*.bmp)"));
 }
 
 void Decompress::on_pushButton_clicked()
 {
-    DataImage i;
-    i.LoadFromSZMIK(ui->lineEdit->text().toStdString());
 
-    switch (i.get_cT()) {
-    case C_OWN_5_BITS:
-        Own5Bits::decompress(i);
-        break;
-    case C_RLE:
-        RLE::decompress(i);
-        break;
-    case C_BYTE_RUN:
-        ByteRun::decompress(i);
-        break;
+	data.loadFile(ui->lineEdit->text().toStdString(), true);
 
-    }
-
-    i.WriteDataToBMP(ui->lineEdit_2->text().toStdString());
-    ui->label_3->setText("ROZPAKOWANO POMYŚLNIE");
+	switch (data.cT)
+	{
+	case C_BYTE_RUN:
+		al = new ByteRun(&data);
+		al->decompress();
+		break;
+	case C_OWN_5_BITS:
+		al = new Own5Bits(&data);
+		al->decompress();
+		break;
+	case C_RLE:
+		al = new RLE(&data);
+		al->decompress();
+		break;
+	case C_NOT_COMPRESSED:
+		//error
+		break;
+	default:
+		break;
+	}
+ 
+    data.writeData(ui->lineEdit_2->text().toStdString(),C_NOT_COMPRESSED);
+	QMessageBox::information(this, "Dekompresja udana", "Plik zostal zdekompresowany");
 }

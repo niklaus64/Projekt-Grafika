@@ -4,10 +4,9 @@
 class RLE : public Algorithm
 {
 public:
+	RLE(DataImage* di = nullptr);
     virtual void compress();
-    static void decompress(DataImage&);
-    virtual void saveToFile(std::string);
-    RLE(std::string, int, int, bool);
+    virtual void decompress();
     ~RLE();
 };
 

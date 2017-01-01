@@ -3,10 +3,10 @@
 
 #include <QDialog>
 #include <QFileDialog>
+#include <QMessageBox>
 #include "RLE.h"
 #include "Enum.h"
 #include "Own5Bits.h"
-#include "NoCompressed.h"
 #include "byterun.h"
 namespace Ui {
 class Decompress;
@@ -14,7 +14,10 @@ class Decompress;
 
 class Decompress : public QDialog
 {
-    Q_OBJECT
+	DataImage data;
+	Algorithm *al;
+    
+	Q_OBJECT
 
 public:
     explicit Decompress(QWidget *parent = 0);
