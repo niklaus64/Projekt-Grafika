@@ -6,7 +6,7 @@ DataImage::DataImage() { }
 void DataImage::writeData(const std::string &pathToWrite, compressionType type)
 {
 	std::fstream file;
-	if (pathToWrite == "")
+    if (pathToWrite.empty())
 		throw Error(1);
 	file.open(pathToWrite, std::ios::out | std::ios::binary);
 	if (!file) {
