@@ -18,7 +18,7 @@ void Own5Bits::decompress()
     std::vector<unsigned char>temp;
 	temp.push_back('0');
 
-    size_type size = di->bitmap.size();
+    size_t size = di->bitmap.size();
     for (unsigned int n = nbits - 1, m = 7, j = 0, k = 0; j<size-1; n--, m--) {
 
 		if (di->bitmap[j] & 1 << m) temp[k] |= 1 << n;
@@ -38,22 +38,27 @@ void Own5Bits::decompress()
 	}
 
 	di->bitmap.assign(temp.begin(), temp.end());
+
 	for (auto &i : di->bitmap) {
 		i <<= (8 - nbits);
 	}
+
 	
 }
 
 void Own5Bits::compress()
 {
-	const int nbits = 5;
+    const int nbits = 5;
+
 	for (auto &i : di->bitmap) {
 		i >>= (8 - nbits);
-	}
+    }
+
 
     std::vector<unsigned char> imgCompressed;
 	imgCompressed.push_back('0');
-    size_type size = di->bitmap.size();
+
+    size_t size = di->bitmap.size();
     for (unsigned int n = nbits - 1, m = 7, j = 0, k = 0; j<size ; n--, m--) {
 
 		if (di->bitmap[j] & 1 << n) imgCompressed[k] |= 1 << m;

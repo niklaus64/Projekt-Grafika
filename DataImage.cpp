@@ -174,6 +174,11 @@ void DataImage::loadFile(const std::string &path, bool isCompressed)
 			file.read((char*)(bitmap.data() + i*width * 3), width * 3);
 			file.ignore(((width * 3 + 3) & (~3)) - width * 3);
 		}
+
+        for (auto &i : bitmap) {
+             i >>= 3;
+             i <<= 3;
+         }
 	}
 	else
 	{
@@ -190,6 +195,8 @@ void DataImage::loadFile(const std::string &path, bool isCompressed)
 		//normalne wczytywanie bitmapy
 		file.read((char*)bitmap.data(), bitmap.size());
 	}
+
+
 	file.close();
 }
 
