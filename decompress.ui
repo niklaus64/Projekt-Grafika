@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Rozpokuj z SZMIK do BMP</string>
+   <string>Dekompresja pliku SZMIK</string>
   </property>
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
@@ -39,7 +39,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>sciezka do szmika</string>
+    <string>Ścieżka do pliku SZMIK</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="lineEdit">
@@ -62,7 +62,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Gdzie zapisac (BMP):</string>
+    <string>Gdzie zapisać plik wyjściowy(BMP):</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="lineEdit_2">

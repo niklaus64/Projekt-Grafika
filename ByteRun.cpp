@@ -1,22 +1,29 @@
 #include "ByteRun.h"
 
-ByteRun::ByteRun(std::string path, int jasnosc, int kontrast, bool skalaSzarosci)
+ByteRun::ByteRun(std::shared_ptr<DataImage> &data)
 {
-    di = new DataImage(C_BYTE_RUN);
-    di->LoadFromBMP(path);
-    if (skalaSzarosci) di->GrayScale();
-    if (jasnosc != 0)di->brightness(jasnosc);
-    if (kontrast != 0)di->contrast(kontrast);
-}
-
-ByteRun::~ByteRun()
-{
+	di = data;
 }
 
 void ByteRun::compress(){
     int currentPosition(0);
-    int sizePixels = di->getWidth()* di->getHeight();
+    int sizePixels;
     std::vector<unsigned char> temp;
+
+
+
+    if(di->isGrayScale()){
+         sizePixels = (di->getWidth()* di->getHeight())/3;
+         size_t size = di->bitmap.size();
+        for(int i=0; i<size; i+=3){
+            temp.push_back(di->bitmap[i]);
+        }
+        di->bitmap.assign(temp.begin(),temp.end());
+        temp.clear();
+    }else{
+         sizePixels = di->getWidth()* di->getHeight();
+    }
+
 
     if(sizePixels==1){
         temp.insert(temp.end(), (char)(0));
@@ -73,55 +80,65 @@ void ByteRun::compress(){
 
 }
 
-void ByteRun::decompress(DataImage &im){
-int i(0);
-long long counterBlankBites(0);
-uint32_t roznicaSzer = ((im.getWidth() * 3 + 3) & (~3)) - (im.getWidth() * 3);
-std::vector <unsigned char> temp;
+void ByteRun::decompress()
+{
+	int i(0);
+	long long counterBlankBites(0);
+    uint32_t roznicaSzer = ((di->getWidth() * 3 + 3) & (~3)) - (di->getWidth() * 3);
+	std::vector <unsigned char> temp;
 
-while(i<im.bitmap.size()){
-    if(((char)im.bitmap[i])<0){
-     for(int j(0); j<(-((char)im.bitmap[i]-1)); j++){
-            temp.push_back(im.bitmap[i+1]);
-            temp.push_back(im.bitmap[i+2]);
-            temp.push_back(im.bitmap[i+3]);
+	while (i<di->bitmap.size()) {
+		if (((char)di->bitmap[i])<0) {
+			for (int j(0); j<(-((char)di->bitmap[i] - 1)); j++) {
+				temp.push_back(di->bitmap[i + 1]);
+				temp.push_back(di->bitmap[i + 2]);
+				temp.push_back(di->bitmap[i + 3]);
+			}
+			i += 4;
+		}
+		else {
+			for (int j(0); j<((char)di->bitmap[i]) + 1; j++) {
+				temp.push_back(di->bitmap[i + 1 + j * 3]);
+				temp.push_back(di->bitmap[i + 2 + j * 3]);
+				temp.push_back(di->bitmap[i + 3 + j * 3]);
+				if ((temp.size() - counterBlankBites) % (di->getWidth() * 3) == 0) {
+					for (unsigned int i(0); i<roznicaSzer; i++) { temp.push_back(0); counterBlankBites++; }
+				}
+			}
+			i += (di->bitmap[i] * 3) + 4;
+		}
+
+	}
+
+	di->bitmap.assign(temp.begin(), temp.end());
+	temp.clear();
+
+
+
+    if(di->isGrayScale()){
+        size_t size = di->bitmap.size();
+        for(int i=0; i<size; i++){
+            temp.push_back(di->bitmap[i]);
+            temp.push_back(di->bitmap[i]);
+            temp.push_back(di->bitmap[i]);
         }
-     i +=4;
+        di->bitmap.assign(temp.begin(),temp.end());
+        temp.clear();
     }
-    else{
-        for(int j(0); j<((char)im.bitmap[i])+1; j++){
-         temp.push_back(im.bitmap[i+1+j*3]);
-         temp.push_back(im.bitmap[i+2+j*3]);
-         temp.push_back(im.bitmap[i+3+j*3]);
-         if ((temp.size()-counterBlankBites)%(im.getWidth()*3)==0){
-             for(unsigned int i(0); i<roznicaSzer;i++) {temp.push_back(0); counterBlankBites++;}
-         }
-     }
-        i+=(im.bitmap[i]*3)+4;
-    }
-
 }
 
-im.bitmap.assign(temp.begin(),temp.end());
-temp.clear();
-}
-
-pixel ByteRun::getPixel(unsigned int i) {
+pixel ByteRun::getPixel(unsigned int i) 
+{
     pixel temp1;
-    uint32_t roznicaSzer =  ((di->getWidth() * 3 + 3) & (~3)) - di->getWidth()*3 ;
 
-    int c = (i / di->getWidth() )*roznicaSzer;
-
-
-    temp1.b = di->bitmap.at(i * 3 + c);
-    temp1.g = di->bitmap.at(i * 3 + c +1);
-    temp1.r = di->bitmap.at(i * 3 + c + 2);
+    temp1.b = di->bitmap.at(i * 3 );
+    temp1.g = di->bitmap.at(i * 3 +1);
+    temp1.r = di->bitmap.at(i * 3 + 2);
 
     return temp1;
 }
 
-
-void ByteRun::saveToFile(std::string path)
+ByteRun::~ByteRun()
 {
-    di->WriteDataToSZMIK(path);
+	di.reset();
 }
