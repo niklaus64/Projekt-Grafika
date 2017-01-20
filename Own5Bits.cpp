@@ -38,10 +38,21 @@ void Own5Bits::decompress()
 	}
 
 	di->bitmap.assign(temp.begin(), temp.end());
-
+    temp.clear();
 	for (auto &i : di->bitmap) {
 		i <<= (8 - nbits);
 	}
+
+    if(di->isGrayScale()){
+        size=di->bitmap.size();
+        for(int i=0; i<size; i++){
+            temp.push_back(di->bitmap[i]);
+            temp.push_back(di->bitmap[i]);
+            temp.push_back(di->bitmap[i]);
+        }
+        di->bitmap.assign(temp.begin(),temp.end());
+        temp.clear();
+    }
 
 	
 }
@@ -49,16 +60,27 @@ void Own5Bits::decompress()
 void Own5Bits::compress()
 {
     const int nbits = 5;
+    std::vector<unsigned char> imgCompressed;
+
+    size_t size = di->bitmap.size();
+
+
+    if(di->isGrayScale()){
+        for(int i=0; i<size; i+=3){
+            imgCompressed.push_back(di->bitmap[i]);
+        }
+        di->bitmap.assign(imgCompressed.begin(),imgCompressed.end());
+        imgCompressed.clear();
+    }
+
 
 	for (auto &i : di->bitmap) {
 		i >>= (8 - nbits);
     }
 
-
-    std::vector<unsigned char> imgCompressed;
 	imgCompressed.push_back('0');
 
-    size_t size = di->bitmap.size();
+    size = di->bitmap.size();
     for (unsigned int n = nbits - 1, m = 7, j = 0, k = 0; j<size ; n--, m--) {
 
 		if (di->bitmap[j] & 1 << n) imgCompressed[k] |= 1 << m;

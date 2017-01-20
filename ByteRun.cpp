@@ -7,8 +7,23 @@ ByteRun::ByteRun(DataImage * data)
 
 void ByteRun::compress(){
     int currentPosition(0);
-    int sizePixels = di->getWidth()* di->getHeight();
+    int sizePixels;
     std::vector<unsigned char> temp;
+
+
+
+    if(di->isGrayScale()){
+         sizePixels = (di->getWidth()* di->getHeight())/3;
+         size_t size = di->bitmap.size();
+        for(int i=0; i<size; i+=3){
+            temp.push_back(di->bitmap[i]);
+        }
+        di->bitmap.assign(temp.begin(),temp.end());
+        temp.clear();
+    }else{
+         sizePixels = di->getWidth()* di->getHeight();
+    }
+
 
     if(sizePixels==1){
         temp.insert(temp.end(), (char)(0));
@@ -69,7 +84,7 @@ void ByteRun::decompress()
 {
 	int i(0);
 	long long counterBlankBites(0);
-	uint32_t roznicaSzer = ((di->getWidth() * 3 + 3) & (~3)) - (di->getWidth() * 3);
+    uint32_t roznicaSzer = ((di->getWidth() * 3 + 3) & (~3)) - (di->getWidth() * 3);
 	std::vector <unsigned char> temp;
 
 	while (i<di->bitmap.size()) {
@@ -97,6 +112,19 @@ void ByteRun::decompress()
 
 	di->bitmap.assign(temp.begin(), temp.end());
 	temp.clear();
+
+
+
+    if(di->isGrayScale()){
+        size_t size = di->bitmap.size();
+        for(int i=0; i<size; i++){
+            temp.push_back(di->bitmap[i]);
+            temp.push_back(di->bitmap[i]);
+            temp.push_back(di->bitmap[i]);
+        }
+        di->bitmap.assign(temp.begin(),temp.end());
+        temp.clear();
+    }
 }
 
 pixel ByteRun::getPixel(unsigned int i) 

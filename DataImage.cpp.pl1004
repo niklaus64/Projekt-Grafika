@@ -42,12 +42,8 @@ void DataImage::writeData(const std::string &pathToWrite, compressionType type)
 			file.write((char*)"0", (((width * 3 + 3) & (~3)) - (width * 3)));
 		}
 	}
-    else{
-
-           for (auto &i : bitmap) file.write((char*)&i, sizeof(i));
-
-    }
-
+	else
+	for (auto &i : bitmap) file.write((char*)&i, sizeof(i));
 
 	//zamkniêcie pliku
 	file.close();
@@ -70,7 +66,7 @@ void DataImage::headerSZMIK(std::fstream &file)
 
 	//rodzaj kompresji
 	file.write((char*)&cT, sizeof(compressionType));
-    file.write((char*)&GrayScale, sizeof(bool));
+    file.write((char*)&isGrayScale, sizeof(bool));
 	//szerokoœæ i wysokoœæ
 	file.write((char *)&width, sizeof(width));
 	file.write((char *)&height, sizeof(height));
@@ -82,22 +78,21 @@ void DataImage::headerSZMIK(std::fstream &file)
 
 void DataImage::headerRLE(std::fstream &file)
 {
-    //*************************
-    //	//Nag³ówke pliku SZMIK:
-    //	//	-2 bajty id 'SZ'
-    //	//	-4 bajty rodzaj kompresji
-    //  //  -1 bajt czy skala szarosci
-    //	//	-4 bajty szerokosc
-    //	//	-4 bajty wysokosc
-    //	//	-8 bajty wilkosc bitmapy
-    //****************************
+	//*************************
+	//	//Nag³ówke pliku RLE:
+	//	//	-2 bajty id 'RL'
+	//	//	-4 bajty rodzaj kompresji
+	//	//	-4 bajty szerokosc
+	//	//	-4 bajty wysokosc
+	//	//	-8 bajty wilkosc bitmapy
+	//****************************
 
 	// id
 	file << 'R' << 'L';
 
 	//rodzaj kompresji
 	file.write((char*)&cT, sizeof(compressionType));
-    file.write((char*)&GrayScale, sizeof(bool));
+
 	//szerokoœæ i wysokoœæ
 	file.write((char *)&width, sizeof(width));
 	file.write((char *)&height, sizeof(height));
@@ -109,22 +104,21 @@ void DataImage::headerRLE(std::fstream &file)
 
 void DataImage::headerByteRun(std::fstream &file)
 {
-    //*************************
-    //	//Nag³ówke pliku SZMIK:
-    //	//	-2 bajty id 'SZ'
-    //	//	-4 bajty rodzaj kompresji
-    //  //  -1 bajt czy skala szarosci
-    //	//	-4 bajty szerokosc
-    //	//	-4 bajty wysokosc
-    //	//	-8 bajty wilkosc bitmapy
-    //****************************
+	//*************************
+	//	//Nag³ówke pliku Byte Run:
+	//	//	-2 bajty id 'BR'
+	//	//	-4 bajty rodzaj kompresji
+	//	//	-4 bajty szerokosc
+	//	//	-4 bajty wysokosc
+	//	//	-8 bajty wilkosc bitmapy
+	//****************************
 
 	// id
 	file << 'B' << 'R';
 
 	//rodzaj kompresji
 	file.write((char*)&cT, sizeof(compressionType));
-    file.write((char*)&GrayScale, sizeof(bool));
+
 	//szerokoœæ i wysokoœæ
 	file.write((char *)&width, sizeof(width));
 	file.write((char *)&height, sizeof(height));
@@ -190,14 +184,13 @@ void DataImage::loadFile(const std::string &path, bool isCompressed)
 	else
 	{
 		//rozmiar headera gdy plik jest skompresowany
-        header.resize(23);
+		header.resize(22);
 		file.read(header.data(), header.size());
 
 		cT = (compressionType) *reinterpret_cast<int*>(&header[2]);
-        GrayScale = (bool) *reinterpret_cast<uint8_t*>(&header[6]);
-        width = *reinterpret_cast<uint32_t*>(&header[7]);
-        height = *reinterpret_cast<uint32_t*>(&header[11]);
-        auto dataSize = *reinterpret_cast<size_t*>(&header[15]);
+		width = *reinterpret_cast<uint32_t*>(&header[6]);
+		height = *reinterpret_cast<uint32_t*>(&header[10]);
+		auto dataSize = *reinterpret_cast<size_t*>(&header[14]);
 		bitmap.resize(dataSize);
 
 		//normalne wczytywanie bitmapy
@@ -209,7 +202,7 @@ void DataImage::loadFile(const std::string &path, bool isCompressed)
 }
 
 
-void DataImage::TransformGrayScale()
+void DataImage::GrayScale()
 {
 	for (unsigned int i = 0, suma = 0; i < (width*height * 3); i += 3, suma = 0) 
 	{
@@ -219,8 +212,6 @@ void DataImage::TransformGrayScale()
 		bitmap[i + 1] = (char)suma;
 		bitmap[i + 2] = (char)suma;
 	}
-
-    GrayScale=true;
 }
 
 void DataImage::brightness(int)
@@ -266,10 +257,6 @@ uint32_t DataImage::getWidth(){
 }
 uint32_t DataImage::getHeight(){
     return height;
-}
-
-bool DataImage::isGrayScale(){
-    return GrayScale;
 }
 
 DataImage::~DataImage() { }

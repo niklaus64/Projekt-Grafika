@@ -8,12 +8,22 @@ RLE::RLE(DataImage * data)
 
 void RLE::compress()
 {
-    size_t buffSize = di->bitmap.size() - 1;
+
     pixel currentPixel;
     pixel comparePixel;
     uint32_t currentPosition = 0;
     std::vector<unsigned char> result;
 
+    if(di->isGrayScale()){
+         size_t size = di->bitmap.size();
+        for(int i=0; i<size; i+=3){
+            result.push_back(di->bitmap[i]);
+        }
+        di->bitmap.assign(result.begin(),result.end());
+        result.clear();
+    }
+
+    size_t buffSize = di->bitmap.size() - 1;
     while (currentPosition+2 <= buffSize) {
         currentPixel = pixel(di->bitmap.at(currentPosition), di->bitmap.at(currentPosition + 1), di->bitmap.at(currentPosition + 2));
         unsigned char repeat = 1;
@@ -77,6 +87,17 @@ void RLE::decompress()
 	}
 	di->bitmap.assign(result.begin(), result.end());
 	result.clear();
+
+    if(di->isGrayScale()){
+        size_t size = di->bitmap.size();
+        for(int i=0; i<size; i++){
+            result.push_back(di->bitmap[i]);
+            result.push_back(di->bitmap[i]);
+            result.push_back(di->bitmap[i]);
+        }
+        di->bitmap.assign(result.begin(),result.end());
+        result.clear();
+    }
 }
 
 

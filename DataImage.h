@@ -56,7 +56,7 @@ class DataImage
 	uint32_t width;
 	uint32_t height;
 	uint32_t offset;
-	
+    bool GrayScale = false;
 	//zapis headerow
 	void FillBitMapFileHeader(BITMAPFILEHEADER &);
 	void FillBitMapInfoHeader(BITMAPINFOHEADER &);
@@ -73,7 +73,7 @@ public:
 	
 	uint32_t getWidth();
     uint32_t getHeight();
-	
+    bool isGrayScale();
 	compressionType cT;
 	
 	void writeData(const std::string &, compressionType);
@@ -81,7 +81,7 @@ public:
 	//drugi argument true - jesli wczytujemy plik skompresowany (chodzi o wczytywanie header'a i bitmapy)
 	void loadFile(const std::string &, bool);
 
-	void GrayScale();
+    void TransformGrayScale();
 	void brightness(int);
 	void contrast(int);
 	
