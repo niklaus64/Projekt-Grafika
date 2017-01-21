@@ -1,10 +1,10 @@
-#pragma once
+ï»¿#pragma once
 #include "Algorithm.h"
 
 /*	Algorytm RLE jest bezstratnym algorytmem kompresji. 
-	Przyk³ad (R,G,B): 
+	PrzykÅ‚ad (R,G,B): 
 	(100,101,102),(100,101,102),(100,101,102) = (100,101,102)(100,101,102)(1)
-	^ oszczêdnoœæ 2 bajtów (przy za³o¿eniu ¿e R = G = B = 1Bajt)				*/
+	^ oszczÄ™dnoÅ›Ä‡ 2 bajtÃ³w (przy zaÅ‚oÅ¼eniu Å¼e R = G = B = 1Bajt)				*/
 class RLE : public Algorithm
 {
 public:

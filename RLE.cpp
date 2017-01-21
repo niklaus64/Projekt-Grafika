@@ -1,4 +1,4 @@
-#include "RLE.h"
+ï»¿#include "RLE.h"
 
 
 RLE::RLE(std::shared_ptr<DataImage> &data)
@@ -31,7 +31,7 @@ void RLE::compress()
         {
 			//gdy wykroczymy poza zakres naszej tablicy
             if (currentPosition + 3 * repeat + 2> buffSize) break;
-            //gdy iloœæ powtórzeñ przestaje mieœciæ siê w charze(max zapis 253 - gdy¿ (repeat-2))
+            //gdy iloÅ›Ä‡ powtÃ³rzeÅ„ przestaje mieÅ›ciÄ‡ siÄ™ w charze(max zapis 253 - gdyÅ¼ (repeat-2))
 			if (repeat >= 255) break;
 
             comparePixel = pixel(di->bitmap.at(currentPosition + 3 * repeat), di->bitmap.at(currentPosition + 3 * repeat + 1), di->bitmap.at(currentPosition + 3 * repeat + 2));
@@ -42,11 +42,11 @@ void RLE::compress()
             else
               break;
         }
-        //niezale¿nie od tego czy pixele siê powtarzaj¹ zapisujemy pixel conajmniej raz
+        //niezaleÅ¼nie od tego czy pixele siÄ™ powtarzajÄ… zapisujemy pixel conajmniej raz
 		result.push_back(currentPixel.r);
         result.push_back(currentPixel.g);
         result.push_back(currentPixel.b);
-		//jeœli pixele siê powtórzy³y
+		//jeÅ›li pixele siÄ™ powtÃ³rzyÅ‚y
         if (repeat >= 2)
         {
 			result.push_back(currentPixel.r);
@@ -73,14 +73,14 @@ void RLE::decompress()
 		comparePixel = pixel(di->bitmap.at(currentPosition + 3), di->bitmap.at(currentPosition + 4), di->bitmap.at(currentPosition + 5));
 		if (currentPixel == comparePixel)
 		{
-			//gdy pixele siê powtarzaj¹ element(currentPosition+6) jest nasz¹ iloœci¹ powtórzeñ
+			//gdy pixele siÄ™ powtarzajÄ… element(currentPosition+6) jest naszÄ… iloÅ›ciÄ… powtÃ³rzeÅ„
 			for (int i = (int)di->bitmap.at(currentPosition + 6) + 2; i > 0; i--)
 			{
 				result.push_back(currentPixel.r);
 				result.push_back(currentPixel.g);
 				result.push_back(currentPixel.b);
 			}
-			//jeœli pixele siê powtórzy³y musimy uwzglêniæ jeden bajt na iloœæ powtórzeñ (st¹d +7 a nie +6)
+			//jeÅ›li pixele siÄ™ powtÃ³rzyÅ‚y musimy uwzglÄ™niÄ‡ jeden bajt na iloÅ›Ä‡ powtÃ³rzeÅ„ (stÄ…d +7 a nie +6)
 			currentPosition += 7;
 		}
 		else
