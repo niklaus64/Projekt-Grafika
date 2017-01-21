@@ -1,11 +1,11 @@
-#pragma once
+Ôªø#pragma once
 #include <memory>
 #include "DataImage.h"
 
 
-/*	Klasa abstrakcyjna, po ktÛrej dziedziczπ konkretne algorytmy.
-	Kaøda z tych klas posiada metody pozwalajπce na kompresje obrazka
-	zapisanego we wskaüniku inteligentnym di	*/
+/*	Klasa abstrakcyjna, po kt√≥rej dziedziczƒÖ konkretne algorytmy.
+	Ka≈ºda z tych klas posiada metody pozwalajƒÖce na kompresje obrazka
+	zapisanego we wska≈∫niku inteligentnym di	*/
 class Algorithm
 {
 protected :
