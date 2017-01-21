@@ -56,7 +56,7 @@ public:
 	void			loadFile(const std::string &, bool);
 
     void			TransformGrayScale();
-	void			brightness(int);
-	void			contrast(int);
+    void			TransformBrightness(int);
+    void			TransformContrast(int);
 };
 

@@ -228,14 +228,77 @@ void DataImage::TransformGrayScale()
     GrayScale=true;
 }
 
-void DataImage::brightness(int)
+void DataImage::TransformBrightness(int brightnessValue)
 {
-	//dopisac podobnie jak skala szarosc
+
+size_t size=bitmap.size();
+   for(unsigned int i =0; i<size; i+=3){
+
+
+
+        int red = [](int p, int color)->int {
+                                            if(color+p<0) return 0;
+                                            else if (color+p>=0 && color+p<=255) return p+color;
+                                            else return 255;
+                    }(brightnessValue,(int)bitmap[i+2]);
+
+        int green = [](int p, int color)->int {
+                                            if(color+p<0) return 0;
+                                            else if (color+p>=0 && color+p<=255) return p+color;
+                                            else return 255;
+        }(brightnessValue,(int)bitmap[i+1]);
+
+        int blue = [](int p, int color)->int {
+                                        if(color+p<0) return 0;
+                                        else if (color+p>=0 && color+p<=255) return p+color;
+                                        else return 255;
+        }(brightnessValue,(int)bitmap[i]);
+
+
+
+        bitmap[i] = (unsigned char)blue;
+        bitmap[i+1] = (unsigned char)green;
+        bitmap[i+2] = (unsigned char)red;
+
+
+
+    }
 }
 
-void DataImage::contrast(int)
+void DataImage::TransformContrast(int contrastValue)
 {
-	//dopisac podobnie jak skala szarosc
+    size_t  size = bitmap.size();
+ for(unsigned int i =0; i<size; i+=3){
+    double a;
+    if(contrastValue<=0){
+         a=1.0 + (contrastValue/256.0);
+    }else{
+         a=256.0/pow(2,log2(257-contrastValue));
+    }
+    int red = [](double p, int color)->int {
+                        if((p*(color-(255/2))+(255/2))<0) return 0;
+                        else if ((p*(color-(255/2))+(255/2))>=0 && (p*(color-(255/2))+(255/2))<=255) return (p*(color-(255/2))+(255/2));
+                        else return 255;
+                }(a,(int)bitmap[i+2]);
+
+
+    int green = [](double p, int color)->int {
+                         if((p*(color-(255/2))+(255/2))<0) return 0;
+                         else if ((p*(color-(255/2))+(255/2))>=0 && (p*(color-(255/2))+(255/2))<=255) return (p*(color-(255/2))+(255/2));
+                         else return 255;
+                }(a,(int)bitmap[i+1]);
+
+
+    int blue = [](double p, int color)->int {
+                          if((p*(color-(255/2))+(255/2))<0) return 0;
+                          else if ((p*(color-(255/2))+(255/2))>=0 && (p*(color-(255/2))+(255/2))<=255) return (p*(color-(255/2))+(255/2));
+                          else return 255;
+                }(a,(int)bitmap[i]);
+
+    bitmap[i] = (unsigned char)blue;
+    bitmap[i+1] = (unsigned char)green;
+    bitmap[i+2] = (unsigned char)red;
+ }
 }
 
 
