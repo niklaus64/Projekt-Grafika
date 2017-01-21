@@ -1,10 +1,10 @@
-#include "DataImage.h"
+ï»¿#include "DataImage.h"
 
 void DataImage::writeData(const std::string &pathToWrite, compressionType type)
 {
 	std::fstream file;
 
-	//jeœli œcie¿ka do zapisu jest pusta
+	//jeÅ›li Å›cieÅ¼ka do zapisu jest pusta
 	if (pathToWrite.empty())
 		return;
 
@@ -16,7 +16,7 @@ void DataImage::writeData(const std::string &pathToWrite, compressionType type)
 		throw Error(2);
 	}
 
-	//zapis nag³ówka do pliku w zale¿noœci od typu kompresji
+	//zapis nagÅ‚Ã³wka do pliku w zaleÅ¼noÅ›ci od typu kompresji
 	switch (type)
 	{
 	case C_NOT_COMPRESSED:
@@ -46,14 +46,14 @@ void DataImage::writeData(const std::string &pathToWrite, compressionType type)
 		for (auto &i : bitmap) file.write((char*)&i, sizeof(i));
 
 
-	//zamkniêcie pliku
+	//zamkniÄ™cie pliku
 	file.close();
 }
 
 void DataImage::headerSZMIK(std::fstream &file)
 {
 	//*************************
-	//	//Nag³ówke pliku SZMIK:
+	//	//NagÅ‚Ã³wke pliku SZMIK:
 	//	//	-2 bajty id 'SZ'
 	//	//	-4 bajty rodzaj kompresji
     //  //  -1 bajt czy skala szarosci
@@ -69,7 +69,7 @@ void DataImage::headerSZMIK(std::fstream &file)
 	file.write((char*)&cT, sizeof(compressionType));
     file.write((char*)&GrayScale, sizeof(bool));
 	
-	//szerokoœæ i wysokoœæ
+	//szerokoÅ›Ä‡ i wysokoÅ›Ä‡
 	file.write((char *)&width, sizeof(width));
 	file.write((char *)&height, sizeof(height));
 
@@ -81,7 +81,7 @@ void DataImage::headerSZMIK(std::fstream &file)
 void DataImage::headerRLE(std::fstream &file)
 {
     //*************************
-    //	//Nag³ówke pliku SZMIK:
+    //	//NagÅ‚Ã³wke pliku SZMIK:
     //	//	-2 bajty id 'SZ'
     //	//	-4 bajty rodzaj kompresji
     //  //  -1 bajt czy skala szarosci
@@ -97,7 +97,7 @@ void DataImage::headerRLE(std::fstream &file)
 	file.write((char*)&cT, sizeof(compressionType));
     file.write((char*)&GrayScale, sizeof(bool));
 	
-	//szerokoœæ i wysokoœæ
+	//szerokoÅ›Ä‡ i wysokoÅ›Ä‡
 	file.write((char *)&width, sizeof(width));
 	file.write((char *)&height, sizeof(height));
 
@@ -109,7 +109,7 @@ void DataImage::headerRLE(std::fstream &file)
 void DataImage::headerByteRun(std::fstream &file)
 {
     //*************************
-    //	//Nag³ówke pliku SZMIK:
+    //	//NagÅ‚Ã³wke pliku SZMIK:
     //	//	-2 bajty id 'SZ'
     //	//	-4 bajty rodzaj kompresji
     //  //  -1 bajt czy skala szarosci
@@ -125,7 +125,7 @@ void DataImage::headerByteRun(std::fstream &file)
 	file.write((char*)&cT, sizeof(compressionType));
     file.write((char*)&GrayScale, sizeof(bool));
 	
-	//szerokoœæ i wysokoœæ
+	//szerokoÅ›Ä‡ i wysokoÅ›Ä‡
 	file.write((char *)&width, sizeof(width));
 	file.write((char *)&height, sizeof(height));
 
@@ -137,7 +137,7 @@ void DataImage::headerByteRun(std::fstream &file)
 void DataImage::headerBMP(std::fstream &file)
 {
 	//*************************
-	//	//Nag³ówke pliku BMP:
+	//	//NagÅ‚Ã³wke pliku BMP:
 	//	//	-2 bajty id 'BR'
 	//	//	-4 bajty rodzaj kompresji
 	//	//	-4 bajty szerokosc
@@ -148,8 +148,8 @@ void DataImage::headerBMP(std::fstream &file)
 	BITMAPFILEHEADER fileHeader;
 	BITMAPINFOHEADER infoHeader;
 
-	FillBitMapFileHeader(fileHeader); //wypelnianie nag³owka BMP
-	FillBitMapInfoHeader(infoHeader); //wypelnianie nag³owka bmp
+	FillBitMapFileHeader(fileHeader); //wypelnianie nagÅ‚owka BMP
+	FillBitMapInfoHeader(infoHeader); //wypelnianie nagÅ‚owka bmp
 
 	file.write((char*)&fileHeader, sizeof(fileHeader));
 	file.write((char*)&infoHeader, sizeof(infoHeader));
@@ -159,7 +159,7 @@ void DataImage::loadFile(const std::string &path, bool isCompressed)
 {
 	std::fstream file;
 	
-	//jeœli œcie¿ka do zapisu jest pusta
+	//jeÅ›li Å›cieÅ¼ka do zapisu jest pusta
 	if (path.empty())
 		return;
 
