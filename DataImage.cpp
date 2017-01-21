@@ -1,169 +1,305 @@
 #include "DataImage.h"
+#include <tgmath.h>
 
-
-
-
-DataImage::DataImage()
+void DataImage::writeData(const std::string &pathToWrite, compressionType type)
 {
-}
+    std::fstream file;
 
-DataImage::DataImage(compressionType _cT)
-{
-	cT = _cT;
-}
+    //je艣li 艣cie偶ka do zapisu jest pusta
+    if (pathToWrite.empty())
+        return;
 
-void DataImage::WriteDataToSZMIK(std::string pathToWrite)
-{
-	std::fstream file;
-	file.open(pathToWrite, std::ios::out | std::ios::binary);
-	if (!file) {
-		std::cout << "Blad przy tworzeniu pliku";
-		exit(1);
-	}
+    file.open(pathToWrite, std::ios::out | std::ios::binary);
 
-//*************************
-//	//Nag丑wke pliku SZMIK:
-//	//	-2 bajty id 'SZ'
-//	//	-4 bajty rodzaj kompresji
-//	//	-4 bajty szerokosc
-//	//	-4 bajty wysokosc
-//	//	-8 bajty wilkosc bitmapy
-//	//	- duzo bajtow bitmapa
-//****************************
-  file << 'S' << 'Z';
- file.write((char*)&cT, sizeof(compressionType));
- file.write((char *)&width, sizeof(width));
-   file.write((char *)&height, sizeof(height));
-
-
-    auto s = bitmap.size();
-
-        file.write((char *)&s, sizeof(s));
-
-
-        for (auto &i : bitmap) file.write((char*)&i,sizeof(i));
-
-
-
-	file.close();
-}
-
-void DataImage::LoadFromBMP(std::string path)
-{
-	std::fstream file;
-	file.open(path, std::ios::in | std::ios::binary);
-	if (!file) {
-		std::cout << "Blad przy tworzeniu pliku";
-		exit(1);
-	}
-
-	const size_t HEADER_SIZE = 54;
-	std::array<char, HEADER_SIZE> header;
-
-	file.read(header.data(), header.size());
-	width = *reinterpret_cast<uint32_t *>(&header[18]);
-	height = *reinterpret_cast<uint32_t *>(&header[22]);
-	auto file_OffSet = *reinterpret_cast<uint32_t*>(&header[10]);
-	
-    bitmap.resize(width*height * 3);
-    for (unsigned int i	= 0; i < height; i++)
+    //blad tworzenia pliku
+    if (!file)
     {
-        file.read((char*)(bitmap.data() + i*width * 3), width * 3);
-        file.ignore(((width * 3 + 3) & (~3)) - width * 3);
+        throw Error(2);
     }
 
+    //zapis nag艂贸wka do pliku w zale偶no艣ci od typu kompresji
+    switch (type)
+    {
+    case C_NOT_COMPRESSED:
+        headerBMP(file);
+        break;
+    case C_RLE:
+        headerRLE(file);
+        break;
+    case C_BYTE_RUN:
+        headerByteRun(file);
+        break;
+    case C_OWN_5_BITS:
+        headerSZMIK(file);
+        break;
+    default:
+        break;
+    }
+
+    //zapis bitmapy
+    if (type == C_NOT_COMPRESSED)
+        for (unsigned int i = 0; i < height; i++)
+        {
+            file.write((char*)bitmap.data() + i*width * 3, width * 3);
+            file.write((char*)"0", (((width * 3 + 3) & (~3)) - (width * 3)));
+        }
+    else
+        for (auto &i : bitmap) file.write((char*)&i, sizeof(i));
 
 
-	
-	file.close();
+    //zamkni臋cie pliku
+    file.close();
 }
 
-void DataImage::LoadFromSZMIK(std::string path)
+void DataImage::headerSZMIK(std::fstream &file)
 {
-	std::fstream file;
-	file.open(path, std::ios::in | std::ios::binary);
-	if (!file) {
-		std::cout << "Blad przy tworzeniu pliku";
-		exit(1);
-	}
+    //*************************
+    //	//Nag艂贸wke pliku SZMIK:
+    //	//	-2 bajty id 'SZ'
+    //	//	-4 bajty rodzaj kompresji
+    //  //  -1 bajt czy skala szarosci
+    //	//	-4 bajty szerokosc
+    //	//	-4 bajty wysokosc
+    //	//	-8 bajty wilkosc bitmapy
+    //****************************
 
+    // id
+    file << 'S' << 'Z';
 
-    const size_t HEADER_SIZE = 22;	//wielkosc nag硂wka szmik
-	std::array<char, HEADER_SIZE> header;
+    //rodzaj kompresji
+    file.write((char*)&cT, sizeof(compressionType));
+    file.write((char*)&GrayScale, sizeof(bool));
 
-	file.read(header.data(), header.size());
-	cT =(compressionType) *reinterpret_cast<int*>(&header[2]);
-	width = *reinterpret_cast<uint32_t*>(&header[6]);
-	height = *reinterpret_cast<uint32_t*>(&header[10]);
-	auto dataSize = *reinterpret_cast<size_t*>(&header[14]);
-	
+    //szeroko艣膰 i wysoko艣膰
+    file.write((char *)&width, sizeof(width));
+    file.write((char *)&height, sizeof(height));
 
-
-		bitmap.resize(dataSize);
-        file.read((char*)bitmap.data(), bitmap.size());
-	
-	file.close();
+    //rozmiar bitmapy
+    auto s = bitmap.size();
+    file.write((char *)&s, sizeof(s));
 }
 
-void DataImage::WriteDataToBMP(std::string path)
+void DataImage::headerRLE(std::fstream &file)
 {
-	BITMAPFILEHEADER fileHeader;
-	BITMAPINFOHEADER infoHeader;
-	 
-    FillBitMapFileHeader(fileHeader); //wypelnianie nag硂wka BMP
-	FillBitMapInfoHeader(infoHeader); //wypelnianie nag硂wka bmp
-	
+    //*************************
+    //	//Nag艂贸wke pliku SZMIK:
+    //	//	-2 bajty id 'SZ'
+    //	//	-4 bajty rodzaj kompresji
+    //  //  -1 bajt czy skala szarosci
+    //	//	-4 bajty szerokosc
+    //	//	-4 bajty wysokosc
+    //	//	-8 bajty wilkosc bitmapy
+    //****************************
 
+    // id
+    file << 'R' << 'L';
 
-	std::fstream file;
-	file.open(path, std::ios::out | std::ios::binary);
-	if (!file) {
-		std::cout << "Blad przy tworzeniu pliku";
-		exit(1);
-	}
-	
+    //rodzaj kompresji
+    file.write((char*)&cT, sizeof(compressionType));
+    file.write((char*)&GrayScale, sizeof(bool));
+
+    //szeroko艣膰 i wysoko艣膰
+    file.write((char *)&width, sizeof(width));
+    file.write((char *)&height, sizeof(height));
+
+    //rozmiar bitmapy
+    auto s = bitmap.size();
+    file.write((char *)&s, sizeof(s));
+}
+
+void DataImage::headerByteRun(std::fstream &file)
+{
+    //*************************
+    //	//Nag艂贸wke pliku SZMIK:
+    //	//	-2 bajty id 'SZ'
+    //	//	-4 bajty rodzaj kompresji
+    //  //  -1 bajt czy skala szarosci
+    //	//	-4 bajty szerokosc
+    //	//	-4 bajty wysokosc
+    //	//	-8 bajty wilkosc bitmapy
+    //****************************
+
+    // id
+    file << 'B' << 'R';
+
+    //rodzaj kompresji
+    file.write((char*)&cT, sizeof(compressionType));
+    file.write((char*)&GrayScale, sizeof(bool));
+
+    //szeroko艣膰 i wysoko艣膰
+    file.write((char *)&width, sizeof(width));
+    file.write((char *)&height, sizeof(height));
+
+    //rozmiar bitmapy
+    auto s = bitmap.size();
+    file.write((char *)&s, sizeof(s));
+}
+
+void DataImage::headerBMP(std::fstream &file)
+{
+    //*************************
+    //	//Nag艂贸wke pliku BMP:
+    //	//	-2 bajty id 'BR'
+    //	//	-4 bajty rodzaj kompresji
+    //	//	-4 bajty szerokosc
+    //	//	-4 bajty wysokosc
+    //	//	-8 bajty wilkosc bitmapy
+    //****************************
+
+    BITMAPFILEHEADER fileHeader;
+    BITMAPINFOHEADER infoHeader;
+
+    FillBitMapFileHeader(fileHeader); //wypelnianie nag艂owka BMP
+    FillBitMapInfoHeader(infoHeader); //wypelnianie nag艂owka bmp
+
     file.write((char*)&fileHeader, sizeof(fileHeader));
     file.write((char*)&infoHeader, sizeof(infoHeader));
+}
 
-    for (unsigned int i = 0 ; i < height; i++)
+void DataImage::loadFile(const std::string &path, bool isCompressed)
+{
+    std::fstream file;
+
+    //je艣li 艣cie偶ka do zapisu jest pusta
+    if (path.empty())
+        return;
+
+    file.open(path, std::ios::in | std::ios::binary);
+
+    //blad tworzenia pliku
+    if (!file)
+    {
+        throw Error(1);
+    }
+
+    std::vector<char> header;
+
+    if (!isCompressed)
+    {
+        //rozmiar headera gdy plik nie jest skompresowany
+        header.resize(54);
+        file.read(header.data(), header.size());
+
+        width = *reinterpret_cast<uint32_t *>(&header[18]);
+        height = *reinterpret_cast<uint32_t *>(&header[22]);
+        offset = *reinterpret_cast<uint32_t*>(&header[10]);
+        bitmap.resize(width*height * 3);
+
+        //wczytywanie bitmapy bez zer uzupelniajacych wiersze do wielokrotnosci 4
+        for (unsigned int i = 0; i < height; i++)
         {
-
-            file.write((char*)bitmap.data() + i*width * 3, width * 3);
-
-            file.write((char*)0, (((width * 3 + 3) & (~3)) - (width * 3)));
-
-
+            file.read((char*)(bitmap.data() + i*width * 3), width * 3);
+            file.ignore(((width * 3 + 3) & (~3)) - width * 3);
         }
-	file.close();
+
+        for (auto &i : bitmap) {
+             i >>= 3;
+             i <<= 3;
+         }
+    }
+    else
+    {
+        //rozmiar headera gdy plik jest skompresowany
+        header.resize(23);
+        file.read(header.data(), header.size());
+
+        cT = (compressionType) *reinterpret_cast<int*>(&header[2]);
+        GrayScale = (bool) *reinterpret_cast<uint8_t*>(&header[6]);
+        width = *reinterpret_cast<uint32_t*>(&header[7]);
+        height = *reinterpret_cast<uint32_t*>(&header[11]);
+        auto dataSize = *reinterpret_cast<size_t*>(&header[15]);
+        bitmap.resize(dataSize);
+
+        //normalne wczytywanie bitmapy
+        file.read((char*)bitmap.data(), bitmap.size());
+    }
+    file.close();
 }
 
-compressionType DataImage::get_cT()
+void DataImage::TransformGrayScale()
 {
-	return cT;
+    for (unsigned int i = 0, suma = 0; i < (width*height * 3); i += 3, suma = 0)
+    {
+        suma = (unsigned int)(bitmap[i]) + (unsigned int)(bitmap[i + 1]) + (unsigned int)(bitmap[i + 2]);
+        suma /= 3;
+        bitmap[i] = (char)suma;
+        bitmap[i + 1] = (char)suma;
+        bitmap[i + 2] = (char)suma;
+    }
+    GrayScale=true;
 }
 
-
-void DataImage::GrayScale()
+void DataImage::TransformBrightness(int brightnessValue)
 {
 
-           for (unsigned int i = 0, suma = 0; i < (width*height * 3); i += 3, suma = 0) {
-                suma = (unsigned int)(bitmap[i]) + (unsigned int)(bitmap[i + 1]) + (unsigned int)(bitmap[i + 2]);
-                suma /= 3;
-                bitmap[i] = (char)suma;
-                bitmap[i + 1] = (char)suma;
-                bitmap[i + 2] = (char)suma;
-            }
+size_t size=bitmap.size();
+   for(unsigned int i =0; i<size; i+=3){
 
+
+
+        int red = [](int p, int color)->int {
+                                            if(color+p<0) return 0;
+                                            else if (color+p>=0 && color+p<=255) return p+color;
+                                            else return 255;
+                    }(brightnessValue,(int)bitmap[i+2]);
+
+        int green = [](int p, int color)->int {
+                                            if(color+p<0) return 0;
+                                            else if (color+p>=0 && color+p<=255) return p+color;
+                                            else return 255;
+        }(brightnessValue,(int)bitmap[i+1]);
+
+        int blue = [](int p, int color)->int {
+                                        if(color+p<0) return 0;
+                                        else if (color+p>=0 && color+p<=255) return p+color;
+                                        else return 255;
+        }(brightnessValue,(int)bitmap[i]);
+
+
+
+        bitmap[i] = (unsigned char)blue;
+        bitmap[i+1] = (unsigned char)green;
+        bitmap[i+2] = (unsigned char)red;
+
+
+
+    }
 }
 
-void DataImage::brightness(int)
+void DataImage::TransformContrast(int contrastValue)
 {
-	//dopisac podobnie jak skala szarosc
-}
+    size_t  size = bitmap.size();
+ for(unsigned int i =0; i<size; i+=3){
+    double a;
+    if(contrastValue<=0){
+         a=1.0 + (contrastValue/256.0);
+    }else{
+         a=256.0/pow(2,log2(257-contrastValue));
+    }
+    int red = [](double p, int color)->int {
+                        if((p*(color-(255/2))+(255/2))<0) return 0;
+                        else if ((p*(color-(255/2))+(255/2))>=0 && (p*(color-(255/2))+(255/2))<=255) return (p*(color-(255/2))+(255/2));
+                        else return 255;
+                }(a,(int)bitmap[i+2]);
 
-void DataImage::contrast(int)
-{
-	//dopisac podobnie jak skala szarosc
+
+    int green = [](double p, int color)->int {
+                         if((p*(color-(255/2))+(255/2))<0) return 0;
+                         else if ((p*(color-(255/2))+(255/2))>=0 && (p*(color-(255/2))+(255/2))<=255) return (p*(color-(255/2))+(255/2));
+                         else return 255;
+                }(a,(int)bitmap[i+1]);
+
+
+    int blue = [](double p, int color)->int {
+                          if((p*(color-(255/2))+(255/2))<0) return 0;
+                          else if ((p*(color-(255/2))+(255/2))>=0 && (p*(color-(255/2))+(255/2))<=255) return (p*(color-(255/2))+(255/2));
+                          else return 255;
+                }(a,(int)bitmap[i]);
+
+    bitmap[i] = (unsigned char)blue;
+    bitmap[i+1] = (unsigned char)green;
+    bitmap[i+2] = (unsigned char)red;
+ }
 }
 
 
@@ -171,26 +307,25 @@ void DataImage::FillBitMapFileHeader(BITMAPFILEHEADER &fileHeader)
 {
     fileHeader.bfType = 'MB';
     fileHeader.bfSize = (size_t)54 + sizeof(bitmap);
-	fileHeader.bfOffBits = 54;
-	fileHeader.bfReserved1 = 0;
-	fileHeader.bfReserved2 = 0;
+    fileHeader.bfOffBits = 54;
+    fileHeader.bfReserved1 = 0;
+    fileHeader.bfReserved2 = 0;
 
 }
 
 void DataImage::FillBitMapInfoHeader(BITMAPINFOHEADER & infoHeader)
 {
-
-	infoHeader.biSize = 40;
-	infoHeader.biWidth = width;
-	infoHeader.biHeight = height;
-	infoHeader.biPlanes = 1;
-	infoHeader.biBitCount = 24;
-	infoHeader.biCompression = 0;
+    infoHeader.biSize = 40;
+    infoHeader.biWidth = width;
+    infoHeader.biHeight = height;
+    infoHeader.biPlanes = 1;
+    infoHeader.biBitCount = 24;
+    infoHeader.biCompression = 0;
     infoHeader.biSizeImage = sizeof(bitmap) ;
-	infoHeader.biClrUsed = 0;
-	infoHeader.biYPelsPerMeter = 0;
-	infoHeader.biXPelsPerMeter = 0;
-	infoHeader.biClrImportant = 0;
+    infoHeader.biClrUsed = 0;
+    infoHeader.biYPelsPerMeter = 0;
+    infoHeader.biXPelsPerMeter = 0;
+    infoHeader.biClrImportant = 0;
 
 }
 
@@ -201,7 +336,6 @@ uint32_t DataImage::getHeight(){
     return height;
 }
 
-DataImage::~DataImage()
-{
-
+bool DataImage::isGrayScale(){
+    return GrayScale;
 }

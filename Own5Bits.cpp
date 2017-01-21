@@ -1,89 +1,102 @@
 #include "Own5Bits.h"
 
-
-
-Own5Bits::Own5Bits(std::string path, int jasnosc, int kontrast, bool skalaSzarosci)
+Own5Bits::Own5Bits(std::shared_ptr<DataImage> &data)
 {
-
-	di = new DataImage(C_OWN_5_BITS);
-	di->LoadFromBMP(path);
-	if (skalaSzarosci) di->GrayScale();
-	if (jasnosc != 0)di->brightness(jasnosc);
-	if (kontrast != 0)di->contrast(kontrast);
-	
-	
+    di = data;
 }
 
-
-Own5Bits::~Own5Bits()
+void Own5Bits::decompress()
 {
-}
-
-
-
-void Own5Bits::decompress(DataImage &im)
-{
-	const int nbits = 5;
+    const int nbits = 5;
     std::vector<unsigned char>temp;
-	temp.push_back('0');
-
-	for (unsigned int n = nbits - 1, m = 7, j = 0, k = 0; j<im.bitmap.size()-1; n--, m--) {
-
-		if (im.bitmap[j] & 1 << m) temp[k] |= 1 << n;
-		else temp[k] &= ~(1 << n);
-
-
-		if (n == 0) {
-			temp.push_back('0');
-			n = nbits;
-			k++;
-		}
-
-		if (m == 0) {
-			j++;
-			m = 8;
-		}
-	}
-
-	im.bitmap.assign(temp.begin(), temp.end());
-	for (auto &i : im.bitmap) {
-		i <<= (8 - nbits);
-	}
-	
+    temp.push_back('0');
+    
+    size_t size = di->bitmap.size();
+    for (unsigned int n = nbits - 1, m = 7, j = 0, k = 0; j<size-1; n--, m--) {
+        
+        if (di->bitmap[j] & 1 << m) temp[k] |= 1 << n;
+        else temp[k] &= ~(1 << n);
+        
+        
+        if (n == 0) {
+            temp.push_back('0');
+            n = nbits;
+            k++;
+        }
+        
+        if (m == 0) {
+            j++;
+            m = 8;
+        }
+    }
+    
+    di->bitmap.assign(temp.begin(), temp.end());
+    temp.clear();
+    for (auto &i : di->bitmap) {
+        i <<= (8 - nbits);
+    }
+    
+    if(di->isGrayScale()){
+        size=di->bitmap.size();
+        for(int i=0; i<size; i++){
+            temp.push_back(di->bitmap[i]);
+            temp.push_back(di->bitmap[i]);
+            temp.push_back(di->bitmap[i]);
+        }
+        di->bitmap.assign(temp.begin(),temp.end());
+        temp.clear();
+    }
+    
+    
 }
 
 void Own5Bits::compress()
 {
-	const int nbits = 5;
-	for (auto &i : di->bitmap) {
-		i >>= (8 - nbits);
-	}
-
+    const int nbits = 5;
     std::vector<unsigned char> imgCompressed;
-	imgCompressed.push_back('0');
-	for (unsigned int n = nbits - 1, m = 7, j = 0, k = 0; j<di->bitmap.size() ; n--, m--) {
-
-		if (di->bitmap[j] & 1 << n) imgCompressed[k] |= 1 << m;
-		else imgCompressed[k] &= ~(1 << m);
-
-
-		if (n == 0) {
-			n = nbits;
-			j++;
-		}
-
-		if (m == 0) {
-			imgCompressed.push_back('0');
-			k++;
-			m = 8;
-		}
-	}
-
-	di->bitmap.assign(imgCompressed.begin(),imgCompressed.end());
-	imgCompressed.clear();
+    
+    size_t size = di->bitmap.size();
+    
+    
+    if(di->isGrayScale()){
+        for(int i=0; i<size; i+=3){
+            imgCompressed.push_back(di->bitmap[i]);
+        }
+        di->bitmap.assign(imgCompressed.begin(),imgCompressed.end());
+        imgCompressed.clear();
+    }
+    
+    
+    for (auto &i : di->bitmap) {
+        i >>= (8 - nbits);
+    }
+    
+    imgCompressed.push_back('0');
+    
+    size = di->bitmap.size();
+    for (unsigned int n = nbits - 1, m = 7, j = 0, k = 0; j<size ; n--, m--) {
+        
+        if (di->bitmap[j] & 1 << n) imgCompressed[k] |= 1 << m;
+        else imgCompressed[k] &= ~(1 << m);
+        
+        
+        if (n == 0) {
+            n = nbits;
+            j++;
+        }
+        
+        if (m == 0) {
+            imgCompressed.push_back('0');
+            k++;
+            m = 8;
+        }
+    }
+    
+    di->bitmap.assign(imgCompressed.begin(),imgCompressed.end());
+    imgCompressed.clear();
 }
 
-void Own5Bits::saveToFile(std::string path)
+Own5Bits::~Own5Bits()
 {
-	di->WriteDataToSZMIK(path);
+    di.reset();
 }
