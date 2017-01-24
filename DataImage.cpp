@@ -1,5 +1,5 @@
 #include "DataImage.h"
-#include <tgmath.h>
+#include <cmath>
 
 void DataImage::writeData(const std::string &pathToWrite, compressionType type)
 {

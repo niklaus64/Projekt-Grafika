@@ -53,8 +53,8 @@
     <widget class="QRadioButton" name="radioButton">
      <property name="geometry">
       <rect>
-       <x>-52</x>
-       <y>27</y>
+       <x>-30</x>
+       <y>30</y>
        <width>150</width>
        <height>21</height>
       </rect>
@@ -109,8 +109,8 @@
       <rect>
        <x>10</x>
        <y>60</y>
-       <width>47</width>
-       <height>13</height>
+       <width>61</width>
+       <height>16</height>
       </rect>
      </property>
      <property name="text">
@@ -122,12 +122,12 @@
       <rect>
        <x>10</x>
        <y>90</y>
-       <width>47</width>
+       <width>61</width>
        <height>16</height>
       </rect>
      </property>
      <property name="text">
-      <string>Konstras</string>
+      <string>Konstrast</string>
      </property>
     </widget>
     <widget class="QSpinBox" name="spinBox">
@@ -242,10 +242,10 @@
     <widget class="QRadioButton" name="radioButton_5">
      <property name="geometry">
       <rect>
-       <x>20</x>
+       <x>0</x>
        <y>100</y>
-       <width>91</width>
-       <height>16</height>
+       <width>111</width>
+       <height>20</height>
       </rect>
      </property>
      <property name="layoutDirection">
@@ -333,12 +333,12 @@
      <x>0</x>
      <y>0</y>
      <width>682</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuPik">
     <property name="title">
-     <string>Pik</string>
+     <string>Plik</string>
     </property>
     <addaction name="actionOtw_rz"/>
     <addaction name="actionRozpakuj"/>

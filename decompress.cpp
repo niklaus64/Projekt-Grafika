@@ -50,5 +50,5 @@ void Decompress::on_pushButton_clicked()
     }
     
     data->writeData(ui->lineEdit_2->text().toStdString(),C_NOT_COMPRESSED);
-    QMessageBox::information(this, "Dekompresja udana", "Plik zostal zdekompresowany");
+    QMessageBox::information(this, "Dekompresja zakończona pomyślnie.", "Dekompresja zakończona pomyślnie.");
 }

@@ -76,7 +76,7 @@ void MainWindow::on_pushButton_2_clicked()
      plik w miejscu niedozwolonym	*/
     try {
         data->writeData(pathToSave.toStdString(), data->cT);
-        QMessageBox::information(this, "Kompresja zakonczona sukcesem", "Udalo sie Twoja kompresja sie powiodla :)");
+        QMessageBox::information(this, "Kompresja zakończona pomyślnie.", "Kompresja zakończona pomyślnie.");
     }
     catch (Error &error)
     {
